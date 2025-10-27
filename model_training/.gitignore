@@ -1,0 +1,24 @@
+# Model Training Data and Results
+# These directories are for generated files during model training
+
+# Training data
+data/
+*.pkl
+
+# Model files
+results/
+*.h5
+*.tflite
+
+# Plots and visualizations
+*.png
+*.jpg
+*.jpeg
+
+# Metrics
+*.csv
+*.json
+*.html
+
+# Jupyter notebooks checkpoints
+notebooks/.ipynb_checkpoints/
