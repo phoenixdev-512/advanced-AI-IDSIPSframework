@@ -15,11 +15,13 @@ sys.path.insert(0, str(Path(__file__).parent))
 
 from src.config import config
 from src.capture.packet_capture import PacketCapture
+from src.capture.simulated_capture import SimulatedTrafficGenerator
 from src.capture.influxdb_manager import InfluxDBManager
 from src.models import AutoencoderModel, FeaturePreprocessor
 from src.scoring import TrustScoreManager, VulnerabilityScanner
 from src.ips import IPTablesManager
 from src.api import app, initialize_api
+from src.api.main import set_current_state
 from src.dashboard import ArgusDashboard
 
 import uvicorn
@@ -45,16 +47,22 @@ class ProjectArgus:
         """Initialize Project Argus
         
         Args:
-            mode: Operating mode ('passive' for IDS, 'inline' for IPS)
+            mode: Operating mode ('passive' for IDS, 'inline' for IPS, 'simulated' for demo)
         """
         self.mode = mode
+        self.capture_mode = mode  # Track whether using real or simulated capture
         logger.info(f"Initializing Project Argus in {mode} mode")
         
-        # Initialize components
-        self.packet_capture = PacketCapture(
-            interface=config.get('capture.interface', 'eth0'),
-            flow_timeout=config.get('capture.flow_timeout', 120)
-        )
+        # Initialize capture based on mode
+        if mode == "simulated":
+            self.packet_capture = SimulatedTrafficGenerator(anomaly_rate=0.08)
+            self.simulated_mode = True
+        else:
+            self.packet_capture = PacketCapture(
+                interface=config.get('capture.interface', 'eth0'),
+                flow_timeout=config.get('capture.flow_timeout', 120)
+            )
+            self.simulated_mode = False
         
         self.influxdb = InfluxDBManager(
             url=config.influxdb_url,
@@ -86,8 +94,29 @@ class ProjectArgus:
         # Load model if exists
         self._load_model()
         
-        # Initialize API
-        initialize_api(self.trust_manager, self.ips_manager, self.vulnerability_scanner)
+        # Initialize API with restart callback
+        async def restart_callback(interface: str, mode: str):
+            """Callback for restarting capture from API"""
+            # This would need to be handled in a separate thread
+            # For now, just log it - actual implementation would require
+            # more sophisticated process management
+            logger.info(f"Restart requested for interface {interface} in mode {mode}")
+            # Note: Actual restart would be handled by a process manager or systemd
+            return True
+        
+        initialize_api(
+            self.trust_manager, 
+            self.ips_manager, 
+            self.vulnerability_scanner,
+            restart_callback
+        )
+        
+        # Set initial API state
+        interface = config.get('capture.interface', 'eth0')
+        set_current_state(
+            interface if not self.simulated_mode else 'simulated',
+            'simulated' if self.simulated_mode else 'passive'
+        )
         
         logger.info("Project Argus initialized successfully")
     
@@ -252,7 +281,7 @@ class ProjectArgus:
     
     def start_capture(self):
         """Start packet capture"""
-        logger.info("Starting packet capture...")
+        logger.info(f"Starting capture in {self.capture_mode} mode...")
         self.running = True
         
         # Start background threads
@@ -268,13 +297,53 @@ class ProjectArgus:
         quarantine_thread = threading.Thread(target=self._check_quarantine_expiry, daemon=True)
         quarantine_thread.start()
         
-        # Start packet capture
+        # Start packet capture based on mode
         try:
-            self.packet_capture.start_capture()
+            if self.simulated_mode:
+                self.packet_capture.start_generation()
+                # Keep running until interrupted
+                while self.running:
+                    time.sleep(1)
+            else:
+                self.packet_capture.start_capture()
         except KeyboardInterrupt:
             logger.info("Capture interrupted by user")
         finally:
             self.stop()
+    
+    def switch_interface(self, interface: str, mode: str = "passive"):
+        """Switch network interface dynamically
+        
+        Args:
+            interface: New interface name
+            mode: 'passive' for real traffic, 'simulated' for demo traffic
+        """
+        logger.info(f"Switching to interface {interface} in {mode} mode")
+        
+        # Stop current capture
+        if self.running:
+            self.stop()
+            time.sleep(1)  # Give it time to stop
+        
+        # Update mode
+        self.capture_mode = mode
+        
+        # Reinitialize capture
+        if interface == 'simulated' or mode == 'simulated':
+            self.packet_capture = SimulatedTrafficGenerator(anomaly_rate=0.08)
+            self.simulated_mode = True
+            logger.info("Switched to simulated traffic mode")
+        else:
+            self.packet_capture = PacketCapture(
+                interface=interface,
+                flow_timeout=config.get('capture.flow_timeout', 120)
+            )
+            self.simulated_mode = False
+            config.update_interface(interface)
+            logger.info(f"Switched to interface: {interface}")
+        
+        # Restart capture
+        self.start_capture()
     
     def stop(self):
         """Stop all components"""
