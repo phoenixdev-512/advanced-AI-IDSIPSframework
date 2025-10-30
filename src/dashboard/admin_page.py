@@ -172,22 +172,23 @@ def create_admin_layout():
                         html.H5("✅ Current Model Status", className="mb-0")
                     ]),
                     dbc.CardBody([
-                        html.Div(id='current-model-status', children=[
+                        html.Div(id='current-model-info', children=[
                             html.P("Model:", className="mb-1"),
                             html.H6("Autoencoder (Default)", className="text-primary mb-3"),
                             html.P("Last Trained:", className="mb-1"),
                             html.P("2024-01-15 14:30:00", className="text-muted mb-3"),
                             html.P("Status:", className="mb-1"),
                             dbc.Badge("Active", color="success", className="mb-3"),
-                            html.Hr(),
-                            dbc.Button(
-                                "Activate Selected Model",
-                                id="btn-activate-model",
-                                color="success",
-                                className="w-100",
-                                disabled=True
-                            )
-                        ])
+                        ]),
+                        html.Div(id='activation-feedback'),
+                        html.Hr(),
+                        dbc.Button(
+                            "Activate Selected Model",
+                            id="btn-activate-model",
+                            color="success",
+                            className="w-100",
+                            disabled=True
+                        )
                     ])
                 ])
             ], width=6)

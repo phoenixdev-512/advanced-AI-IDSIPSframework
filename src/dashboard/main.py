@@ -957,7 +957,8 @@ class ArgusDashboard:
         
         # Callback to activate selected model
         @self.app.callback(
-            Output('current-model-status', 'children'),
+            [Output('activation-feedback', 'children'),
+             Output('current-model-info', 'children')],
             [Input('btn-activate-model', 'n_clicks')],
             [State('selected-model-id', 'children')],
             prevent_initial_call=True
@@ -965,7 +966,7 @@ class ArgusDashboard:
         def activate_selected_model(n_clicks, selected_model_id):
             """Activate the selected model"""
             if not n_clicks or not selected_model_id:
-                return dash.no_update
+                return dash.no_update, dash.no_update
             
             try:
                 model_id = int(selected_model_id)
@@ -976,31 +977,30 @@ class ArgusDashboard:
                 )
                 
                 if response.status_code == 200:
-                    return html.Div([
-                        dbc.Alert("✅ Model activated successfully!", color="success", dismissable=True, duration=3000),
+                    feedback = dbc.Alert("✅ Model activated successfully!", 
+                                       color="success", dismissable=True, duration=3000)
+                    
+                    model_info = html.Div([
                         html.P("Model:", className="mb-1"),
                         html.H6(f"Model {model_id}", className="text-primary mb-3"),
+                        html.P("Last Activated:", className="mb-1"),
+                        html.P(datetime.now().strftime("%Y-%m-%d %H:%M:%S"), className="text-muted mb-3"),
                         html.P("Status:", className="mb-1"),
                         dbc.Badge("Active", color="success", className="mb-3"),
-                        html.Hr(),
-                        dbc.Button(
-                            "Activate Selected Model",
-                            id="btn-activate-model",
-                            color="success",
-                            className="w-100",
-                            disabled=True
-                        )
                     ])
+                    
+                    return feedback, model_info
                 else:
-                    return html.Div([
-                        dbc.Alert(f"❌ Error activating model: {response.json().get('detail', 'Unknown error')}", 
-                                color="danger", dismissable=True)
-                    ])
+                    feedback = dbc.Alert(
+                        f"❌ Error activating model: {response.json().get('detail', 'Unknown error')}", 
+                        color="danger", dismissable=True
+                    )
+                    return feedback, dash.no_update
+                    
             except Exception as e:
                 logger.error(f"Error activating model: {e}")
-                return html.Div([
-                    dbc.Alert(f"❌ Error: {str(e)}", color="danger", dismissable=True)
-                ])
+                feedback = dbc.Alert(f"❌ Error: {str(e)}", color="danger", dismissable=True)
+                return feedback, dash.no_update
     
     def _get_status_badge(self, device: Dict[str, Any]) -> html.Span:
         """Get status badge for device"""
