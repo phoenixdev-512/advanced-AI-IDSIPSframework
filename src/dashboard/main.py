@@ -928,6 +928,79 @@ class ArgusDashboard:
                 logger.error(f"Error fetching training history: {e}")
             
             return html.P("Error loading training history", className="text-danger text-center")
+        
+        # Callback to handle training history item clicks
+        @self.app.callback(
+            [Output('selected-model-id', 'children'),
+             Output('btn-activate-model', 'disabled')],
+            [Input({'type': 'training-run', 'index': dash.dependencies.ALL}, 'n_clicks')],
+            prevent_initial_call=True
+        )
+        def select_model(n_clicks_list):
+            """Handle selection of a model from training history"""
+            ctx = callback_context
+            
+            if not ctx.triggered or not any(n_clicks_list):
+                return "", True
+            
+            # Get the model ID from the triggered component
+            triggered_id = ctx.triggered[0]['prop_id'].split('.')[0]
+            if triggered_id:
+                import json as json_lib
+                model_data = json_lib.loads(triggered_id)
+                model_id = model_data.get('index')
+                
+                if model_id:
+                    return str(model_id), False  # Store model ID and enable button
+            
+            return "", True
+        
+        # Callback to activate selected model
+        @self.app.callback(
+            Output('current-model-status', 'children'),
+            [Input('btn-activate-model', 'n_clicks')],
+            [State('selected-model-id', 'children')],
+            prevent_initial_call=True
+        )
+        def activate_selected_model(n_clicks, selected_model_id):
+            """Activate the selected model"""
+            if not n_clicks or not selected_model_id:
+                return dash.no_update
+            
+            try:
+                model_id = int(selected_model_id)
+                
+                response = requests.post(
+                    f"{self.api_url}/api/model/activate?model_id={model_id}",
+                    timeout=10
+                )
+                
+                if response.status_code == 200:
+                    return html.Div([
+                        dbc.Alert("✅ Model activated successfully!", color="success", dismissable=True, duration=3000),
+                        html.P("Model:", className="mb-1"),
+                        html.H6(f"Model {model_id}", className="text-primary mb-3"),
+                        html.P("Status:", className="mb-1"),
+                        dbc.Badge("Active", color="success", className="mb-3"),
+                        html.Hr(),
+                        dbc.Button(
+                            "Activate Selected Model",
+                            id="btn-activate-model",
+                            color="success",
+                            className="w-100",
+                            disabled=True
+                        )
+                    ])
+                else:
+                    return html.Div([
+                        dbc.Alert(f"❌ Error activating model: {response.json().get('detail', 'Unknown error')}", 
+                                color="danger", dismissable=True)
+                    ])
+            except Exception as e:
+                logger.error(f"Error activating model: {e}")
+                return html.Div([
+                    dbc.Alert(f"❌ Error: {str(e)}", color="danger", dismissable=True)
+                ])
     
     def _get_status_badge(self, device: Dict[str, Any]) -> html.Span:
         """Get status badge for device"""
