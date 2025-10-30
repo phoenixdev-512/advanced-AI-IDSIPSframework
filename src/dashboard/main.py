@@ -11,6 +11,8 @@ import plotly.graph_objs as go
 from datetime import datetime, timedelta
 import requests
 
+from .admin_page import create_admin_layout
+
 logger = logging.getLogger(__name__)
 
 
@@ -115,14 +117,17 @@ class ArgusDashboard:
         logger.info("Dashboard initialized")
     
     def _setup_layout(self):
-        """Setup dashboard layout"""
-        self.app.layout = dbc.Container([
-            # Store for theme preference
+        """Setup dashboard layout with multi-page routing"""
+        self.app.layout = html.Div([
+            dcc.Location(id='url', refresh=False),
             dcc.Store(id='theme-store', storage_type='local', data='dark'),
-            
-            # Hidden div for clientside callbacks
             html.Div(id='theme-output', style={'display': 'none'}),
-            
+            html.Div(id='page-content')
+        ])
+    
+    def _create_main_dashboard_layout(self):
+        """Create main dashboard page layout"""
+        return dbc.Container([
             # Header with System Status
             dbc.Row([
                 dbc.Col([
@@ -274,6 +279,25 @@ class ArgusDashboard:
                 ], width=12),
             ], className="mb-4"),
             
+            # NEW: Live Network Discovery Card
+            dbc.Row([
+                dbc.Col([
+                    dbc.Card([
+                        dbc.CardHeader("📡 Live Network Discovery"),
+                        dbc.CardBody([
+                            dbc.Button(
+                                "Scan Network for Devices 📡",
+                                id="btn-network-scan",
+                                color="primary",
+                                className="mb-3 w-100"
+                            ),
+                            html.Div(id='network-scan-status', className="mb-2"),
+                            html.Div(id='network-scan-results')
+                        ])
+                    ])
+                ], width=12)
+            ], className="mb-4"),
+            
             # Device Table
             dbc.Row([
                 dbc.Col([
@@ -300,6 +324,19 @@ class ArgusDashboard:
     
     def _setup_callbacks(self):
         """Setup dashboard callbacks"""
+        
+        # Page routing callback
+        @self.app.callback(
+            Output('page-content', 'children'),
+            [Input('url', 'pathname')]
+        )
+        def display_page(pathname):
+            """Route to different pages based on URL"""
+            if pathname == '/admin':
+                return create_admin_layout()
+            else:
+                # Default to main dashboard
+                return self._create_main_dashboard_layout()
         
         @self.app.callback(
             [Output('stat-total-devices', 'children'),
@@ -675,6 +712,295 @@ class ArgusDashboard:
                 )
             
             return ""
+        
+        # Network Discovery callback
+        @self.app.callback(
+            [Output('network-scan-status', 'children'),
+             Output('network-scan-results', 'children')],
+            [Input('btn-network-scan', 'n_clicks')]
+        )
+        def handle_network_scan(n_clicks):
+            """Handle network discovery scan"""
+            if not n_clicks:
+                return "", ""
+            
+            try:
+                # Show scanning status
+                status = dbc.Alert([
+                    dbc.Spinner(size="sm", className="me-2"),
+                    "Scanning network... This may take up to 60 seconds."
+                ], color="info")
+                
+                # Trigger network scan via API
+                response = requests.post(f"{self.api_url}/api/network/discover", timeout=90)
+                
+                if response.status_code == 200:
+                    devices = response.json().get('devices', [])
+                    
+                    if not devices:
+                        return (
+                            dbc.Alert("Scan complete. No devices found.", color="warning", dismissable=True),
+                            ""
+                        )
+                    
+                    # Create results table
+                    table_header = [
+                        html.Thead(html.Tr([
+                            html.Th("IP Address"),
+                            html.Th("MAC Address"),
+                            html.Th("Manufacturer")
+                        ]))
+                    ]
+                    
+                    rows = []
+                    for device in devices:
+                        rows.append(html.Tr([
+                            html.Td(device.get('ip', 'Unknown')),
+                            html.Td(device.get('mac', 'Unknown')),
+                            html.Td(device.get('manufacturer', 'Unknown'))
+                        ]))
+                    
+                    table_body = [html.Tbody(rows)]
+                    
+                    results_table = dbc.Table(
+                        table_header + table_body,
+                        bordered=True,
+                        hover=True,
+                        responsive=True,
+                        striped=True
+                    )
+                    
+                    return (
+                        dbc.Alert(f"✅ Scan complete! Found {len(devices)} devices.", 
+                                color="success", dismissable=True, duration=5000),
+                        results_table
+                    )
+                else:
+                    return (
+                        dbc.Alert(f"❌ Error: {response.json().get('detail', 'Unknown error')}", 
+                                color="danger", dismissable=True),
+                        ""
+                    )
+                    
+            except requests.Timeout:
+                return (
+                    dbc.Alert("❌ Scan timed out. Please try again.", 
+                            color="danger", dismissable=True),
+                    ""
+                )
+            except Exception as e:
+                logger.error(f"Error during network scan: {e}")
+                return (
+                    dbc.Alert(f"❌ Error: {str(e)}", color="danger", dismissable=True),
+                    ""
+                )
+        
+        # Admin page callbacks
+        @self.app.callback(
+            [Output('uploaded-filename', 'children'),
+             Output('btn-start-training', 'disabled')],
+            [Input('upload-dataset', 'contents')],
+            [State('upload-dataset', 'filename')]
+        )
+        def handle_dataset_upload(contents, filename):
+            """Handle dataset file upload"""
+            if contents is None:
+                return "", True
+            
+            try:
+                # Upload file to backend
+                import base64
+                content_type, content_string = contents.split(',')
+                decoded = base64.b64decode(content_string)
+                
+                # Send to API
+                files = {'file': (filename, decoded)}
+                response = requests.post(
+                    f"{self.api_url}/api/train/upload_dataset",
+                    files=files,
+                    timeout=30
+                )
+                
+                if response.status_code == 200:
+                    return (
+                        dbc.Alert(f"✅ Uploaded: {filename}", color="success", className="mt-2"),
+                        False  # Enable training button
+                    )
+                else:
+                    return (
+                        dbc.Alert(f"❌ Upload failed: {filename}", color="danger", className="mt-2"),
+                        True
+                    )
+            except Exception as e:
+                logger.error(f"Error uploading dataset: {e}")
+                return (
+                    dbc.Alert(f"❌ Error: {str(e)}", color="danger", className="mt-2"),
+                    True
+                )
+        
+        @self.app.callback(
+            Output('training-status', 'children'),
+            [Input('btn-start-training', 'n_clicks')],
+            [State('model-type-select', 'value'),
+             State('epochs-input', 'value'),
+             State('batch-size-input', 'value'),
+             State('validation-options', 'value')]
+        )
+        def start_training(n_clicks, model_type, epochs, batch_size, validation_options):
+            """Start model training"""
+            if not n_clicks:
+                return ""
+            
+            try:
+                # Prepare training configuration
+                config = {
+                    'model_type': model_type,
+                    'epochs': epochs,
+                    'batch_size': batch_size,
+                    'cross_validation': 'cv' in validation_options if validation_options else False,
+                    'hyperparameter_tuning': 'tuning' in validation_options if validation_options else False,
+                    'generate_report': 'report' in validation_options if validation_options else False
+                }
+                
+                # Start training via API
+                response = requests.post(
+                    f"{self.api_url}/api/train/start",
+                    json=config,
+                    timeout=10
+                )
+                
+                if response.status_code == 200:
+                    return dbc.Alert([
+                        dbc.Spinner(size="sm", className="me-2"),
+                        "Training in progress... Check Training History for updates."
+                    ], color="info")
+                else:
+                    return dbc.Alert(
+                        f"❌ Error starting training: {response.json().get('detail', 'Unknown error')}",
+                        color="danger",
+                        dismissable=True
+                    )
+            except Exception as e:
+                logger.error(f"Error starting training: {e}")
+                return dbc.Alert(f"❌ Error: {str(e)}", color="danger", dismissable=True)
+        
+        @self.app.callback(
+            Output('training-history-list', 'children'),
+            [Input('training-interval', 'n_intervals')]
+        )
+        def update_training_history(n):
+            """Update training history from API"""
+            try:
+                response = requests.get(f"{self.api_url}/api/train/history", timeout=5)
+                if response.status_code == 200:
+                    history = response.json().get('history', [])
+                    
+                    if not history:
+                        return html.P("No training history available", className="text-muted text-center")
+                    
+                    # Create list of training runs
+                    items = []
+                    for run in history:
+                        badge_color = "success" if run.get('status') == 'completed' else "warning"
+                        is_active = run.get('is_active', False)
+                        
+                        items.append(dbc.ListGroupItem([
+                            dbc.Row([
+                                dbc.Col([
+                                    html.H6(f"{run.get('model_type', 'Unknown')} Model"),
+                                    html.Small(f"F1: {run.get('f1_score', 0):.3f}, "
+                                             f"AUC: {run.get('auc_score', 0):.3f}"),
+                                    html.Br(),
+                                    html.Small(run.get('trained_at', ''), className="text-muted")
+                                ], width=8),
+                                dbc.Col([
+                                    dbc.Badge(
+                                        "ACTIVE" if is_active else run.get('status', 'completed').upper(),
+                                        color="success" if is_active else badge_color,
+                                        className="float-end"
+                                    )
+                                ], width=4)
+                            ])
+                        ], id={'type': 'training-run', 'index': run.get('id')}, action=True))
+                    
+                    return dbc.ListGroup(items)
+            except Exception as e:
+                logger.error(f"Error fetching training history: {e}")
+            
+            return html.P("Error loading training history", className="text-danger text-center")
+        
+        # Callback to handle training history item clicks
+        @self.app.callback(
+            [Output('selected-model-id', 'children'),
+             Output('btn-activate-model', 'disabled')],
+            [Input({'type': 'training-run', 'index': dash.dependencies.ALL}, 'n_clicks')],
+            prevent_initial_call=True
+        )
+        def select_model(n_clicks_list):
+            """Handle selection of a model from training history"""
+            ctx = callback_context
+            
+            if not ctx.triggered or not any(n_clicks_list):
+                return "", True
+            
+            # Get the model ID from the triggered component
+            triggered_id = ctx.triggered[0]['prop_id'].split('.')[0]
+            if triggered_id:
+                import json as json_lib
+                model_data = json_lib.loads(triggered_id)
+                model_id = model_data.get('index')
+                
+                if model_id:
+                    return str(model_id), False  # Store model ID and enable button
+            
+            return "", True
+        
+        # Callback to activate selected model
+        @self.app.callback(
+            [Output('activation-feedback', 'children'),
+             Output('current-model-info', 'children')],
+            [Input('btn-activate-model', 'n_clicks')],
+            [State('selected-model-id', 'children')],
+            prevent_initial_call=True
+        )
+        def activate_selected_model(n_clicks, selected_model_id):
+            """Activate the selected model"""
+            if not n_clicks or not selected_model_id:
+                return dash.no_update, dash.no_update
+            
+            try:
+                model_id = int(selected_model_id)
+                
+                response = requests.post(
+                    f"{self.api_url}/api/model/activate?model_id={model_id}",
+                    timeout=10
+                )
+                
+                if response.status_code == 200:
+                    feedback = dbc.Alert("✅ Model activated successfully!", 
+                                       color="success", dismissable=True, duration=3000)
+                    
+                    model_info = html.Div([
+                        html.P("Model:", className="mb-1"),
+                        html.H6(f"Model {model_id}", className="text-primary mb-3"),
+                        html.P("Last Activated:", className="mb-1"),
+                        html.P(datetime.now().strftime("%Y-%m-%d %H:%M:%S"), className="text-muted mb-3"),
+                        html.P("Status:", className="mb-1"),
+                        dbc.Badge("Active", color="success", className="mb-3"),
+                    ])
+                    
+                    return feedback, model_info
+                else:
+                    feedback = dbc.Alert(
+                        f"❌ Error activating model: {response.json().get('detail', 'Unknown error')}", 
+                        color="danger", dismissable=True
+                    )
+                    return feedback, dash.no_update
+                    
+            except Exception as e:
+                logger.error(f"Error activating model: {e}")
+                feedback = dbc.Alert(f"❌ Error: {str(e)}", color="danger", dismissable=True)
+                return feedback, dash.no_update
     
     def _get_status_badge(self, device: Dict[str, Any]) -> html.Span:
         """Get status badge for device"""
