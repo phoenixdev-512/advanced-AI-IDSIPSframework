@@ -41,7 +41,7 @@ class TestSimulatedTrafficGenerator:
         generator = SimulatedTrafficGenerator(anomaly_rate=0.1)
         
         assert generator.anomaly_rate == 0.1
-        assert generator.running == False
+        assert generator.running is False
         assert len(generator.completed_flows) == 0
     
     def test_generate_normal_flow(self):
@@ -113,4 +113,4 @@ class TestSimulatedTrafficGenerator:
         generator.running = True
         generator.stop_generation()
         
-        assert generator.running == False
+        assert generator.running is False
