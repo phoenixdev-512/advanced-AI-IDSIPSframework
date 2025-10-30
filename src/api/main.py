@@ -42,6 +42,14 @@ current_interface: str = "eth0"
 current_mode: str = "passive"  # passive or simulated
 capture_restart_callback = None
 
+
+def set_current_state(interface: str, mode: str):
+    """Set the current interface and mode"""
+    global current_interface, current_mode
+    current_interface = interface
+    current_mode = mode
+
+
 # WebSocket connections
 websocket_connections: List[WebSocket] = []
 
@@ -347,16 +355,19 @@ async def get_system_status():
 # Initialization function
 def initialize_api(trust_mgr: TrustScoreManager, 
                   ips_mgr: IPTablesManager,
-                  vuln_scanner: VulnerabilityScanner):
+                  vuln_scanner: VulnerabilityScanner,
+                  restart_callback=None):
     """Initialize API with manager instances
     
     Args:
         trust_mgr: Trust score manager instance
         ips_mgr: IPS manager instance
         vuln_scanner: Vulnerability scanner instance
+        restart_callback: Optional callback function for restarting capture
     """
-    global trust_manager, ips_manager, vulnerability_scanner
+    global trust_manager, ips_manager, vulnerability_scanner, capture_restart_callback
     trust_manager = trust_mgr
     ips_manager = ips_mgr
     vulnerability_scanner = vuln_scanner
+    capture_restart_callback = restart_callback
     logger.info("API initialized with manager instances")
