@@ -12,6 +12,7 @@ import asyncio
 
 from ..scoring import TrustScoreManager, VulnerabilityScanner
 from ..ips import IPTablesManager
+from ..utils import get_network_interfaces
 
 logger = logging.getLogger(__name__)
 
@@ -35,6 +36,11 @@ app.add_middleware(
 trust_manager: Optional[TrustScoreManager] = None
 ips_manager: Optional[IPTablesManager] = None
 vulnerability_scanner: Optional[VulnerabilityScanner] = None
+
+# Global state for capture management
+current_interface: str = "eth0"
+current_mode: str = "passive"  # passive or simulated
+capture_restart_callback = None
 
 # WebSocket connections
 websocket_connections: List[WebSocket] = []
@@ -74,6 +80,12 @@ class ScanRequest(BaseModel):
     """Vulnerability scan request model"""
     device_ip: str
     quick: bool = True
+
+
+class InterfaceUpdateRequest(BaseModel):
+    """Network interface update request model"""
+    interface: str
+    mode: str = "passive"  # passive or simulated
 
 
 # API Routes
@@ -252,6 +264,84 @@ async def broadcast_update(message: Dict[str, Any]):
             await connection.send_json(message)
         except Exception as e:
             logger.error(f"Error broadcasting to WebSocket: {e}")
+
+
+# Network interface management endpoints
+@app.get("/api/interfaces")
+async def get_interfaces():
+    """Get list of available network interfaces"""
+    interfaces = get_network_interfaces()
+    return {
+        "interfaces": interfaces,
+        "current_interface": current_interface,
+        "current_mode": current_mode
+    }
+
+
+@app.post("/api/interfaces/update")
+async def update_interface(request: InterfaceUpdateRequest):
+    """Update the network interface for packet capture
+    
+    This endpoint will trigger a restart of the capture process
+    """
+    global current_interface, current_mode
+    
+    interface = request.interface
+    mode = request.mode
+    
+    # Validate interface
+    interfaces = get_network_interfaces()
+    valid_interfaces = [iface['name'] for iface in interfaces]
+    
+    if interface not in valid_interfaces:
+        raise HTTPException(status_code=400, detail=f"Invalid interface: {interface}")
+    
+    # Update global state
+    current_interface = interface
+    current_mode = mode
+    
+    # Update config file
+    try:
+        import yaml
+        from pathlib import Path
+        
+        config_path = Path(__file__).parent.parent.parent / "config" / "config.yaml"
+        with open(config_path, 'r') as f:
+            config_data = yaml.safe_load(f)
+        
+        config_data['capture']['interface'] = interface
+        
+        with open(config_path, 'w') as f:
+            yaml.dump(config_data, f, default_flow_style=False)
+        
+        logger.info(f"Updated config.yaml with interface: {interface}")
+    except Exception as e:
+        logger.error(f"Error updating config.yaml: {e}")
+    
+    # Trigger restart callback if available
+    if capture_restart_callback:
+        try:
+            await capture_restart_callback(interface, mode)
+        except Exception as e:
+            logger.error(f"Error restarting capture: {e}")
+            raise HTTPException(status_code=500, detail=f"Error restarting capture: {str(e)}")
+    
+    return {
+        "status": "success",
+        "message": f"Interface updated to {interface} in {mode} mode",
+        "interface": interface,
+        "mode": mode
+    }
+
+
+@app.get("/api/system/status")
+async def get_system_status():
+    """Get current system status"""
+    return {
+        "mode": current_mode,
+        "interface": current_interface,
+        "status": "ONLINE"
+    }
 
 
 # Initialization function

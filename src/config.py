@@ -4,12 +4,15 @@ Configuration management for Project Argus
 
 import os
 import yaml
+import logging
 from typing import Dict, Any
 from pathlib import Path
 from dotenv import load_dotenv
 
 # Load environment variables
 load_dotenv()
+
+logger = logging.getLogger(__name__)
 
 class Config:
     """Configuration manager for Project Argus"""
@@ -69,6 +72,15 @@ class Config:
         self.dashboard_host = os.getenv('DASHBOARD_HOST', '0.0.0.0')
         self.dashboard_port = int(os.getenv('DASHBOARD_PORT', '8050'))
         self.dashboard_debug = os.getenv('DASHBOARD_DEBUG', 'false').lower() == 'true'
+    
+    def update_interface(self, interface: str):
+        """Update capture interface dynamically
+        
+        Args:
+            interface: New interface name
+        """
+        self.config['capture']['interface'] = interface
+        logger.info(f"Updated capture interface to: {interface}")
     
     def get(self, key: str, default: Any = None) -> Any:
         """Get configuration value by key
