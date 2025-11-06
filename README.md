@@ -4,6 +4,15 @@
 
 Project Argus is an advanced, low-cost network security platform designed to protect small office/home office (SOHO) environments. It runs on lightweight hardware (Raspberry Pi 4/5) and uses behavioral anomaly detection (AI) to identify, rate, and prevent threats from both outside attackers and compromised internal devices.
 
+## 🎯 Project Goals
+
+1. **Accessible Security**: Provide enterprise-grade network security capabilities on affordable hardware (~$50-100)
+2. **Privacy-First**: All data processing happens locally - no cloud dependencies or subscriptions
+3. **AI-Driven Detection**: Use machine learning to detect zero-day threats and unusual behavior patterns
+4. **Automated Response**: Automatically quarantine suspicious devices to prevent lateral movement
+5. **Easy Deployment**: Simple setup process with minimal configuration required
+6. **Educational**: Serve as a learning platform for network security and machine learning concepts
+
 ## 🌟 Key Features
 
 - **🤖 AI-Powered Anomaly Detection**: Uses Autoencoder neural networks to detect deviations from normal device behavior
@@ -35,7 +44,32 @@ Project Argus is an advanced, low-cost network security platform designed to pro
 
 ## 🚀 Quick Start
 
-### Installation
+### Option 1: Try the Demo (No Hardware Required)
+
+The fastest way to see Project Argus in action:
+
+```bash
+# Clone the repository
+git clone https://github.com/phoenixdev-512/advanced-AI-IDSIPSframework.git
+cd advanced-AI-IDSIPSframework
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Run the demo (uses sample PCAP file)
+python3 examples/demo.py
+```
+
+This will demonstrate the complete detection flow:
+- Load sample network traffic (including normal and anomalous patterns)
+- Train an anomaly detection model
+- Detect suspicious behavior
+- Calculate device trust scores
+- Display results
+
+### Option 2: Full Installation (Raspberry Pi)
+
+For production deployment on Raspberry Pi:
 
 1. **Clone the repository**:
 ```bash
@@ -68,6 +102,47 @@ sudo systemctl start argus-capture argus-api argus-dashboard
 
 6. **Access the dashboard**:
    - Open browser to `http://localhost:8050`
+
+## 📁 Project Structure
+
+Understanding where to find major modules:
+
+```
+advanced-AI-IDSIPSframework/
+├── src/                          # Main source code
+│   ├── capture/                  # Network packet capture
+│   │   ├── packet_capture.py    # Real packet capture (Scapy)
+│   │   ├── simulated_capture.py # Simulated traffic generator
+│   │   └── influxdb_manager.py  # Time-series database interface
+│   ├── models/                   # Machine learning models
+│   │   ├── autoencoder.py       # Anomaly detection model
+│   │   └── feature_preprocessing.py  # Feature extraction
+│   ├── scoring/                  # Trust score system
+│   │   ├── trust_score.py       # Device trust score management
+│   │   └── vulnerability_scan.py # Port/vulnerability scanning
+│   ├── ips/                      # Intrusion Prevention System
+│   │   └── firewall.py          # iptables integration
+│   ├── api/                      # REST API
+│   │   └── main.py              # FastAPI endpoints
+│   ├── dashboard/                # Web dashboard
+│   │   ├── main.py              # Plotly Dash UI
+│   │   └── admin_page.py        # Admin interface
+│   └── config.py                 # Configuration management
+├── examples/                     # Demo scripts and samples
+│   ├── demo.py                  # Complete detection flow demo
+│   ├── usage_examples.py        # Component usage examples
+│   └── demo_data/               # Sample PCAP files
+├── model_training/               # Model training utilities
+│   ├── train_basic_models.py   # Train ML models
+│   └── compare_models.py        # Model comparison
+├── docs/                         # Documentation
+│   ├── QUICKSTART.md            # Quick start guide
+│   ├── ARCHITECTURE.md          # System architecture
+│   └── API.md                   # API documentation
+├── main.py                       # Main entry point
+├── train_model.py               # Model training script
+└── requirements.txt             # Python dependencies
+```
 
 ## 📚 Documentation
 
