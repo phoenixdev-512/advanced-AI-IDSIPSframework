@@ -235,6 +235,461 @@ echo Setup complete!
 echo You can now run: run_argus.bat full --mode passive
 EOF
 
+# Create quick start script for Linux/Mac
+cat > "$DEPLOYMENT_DIR/quickstart.sh" << 'EOF'
+#!/bin/bash
+###############################################################################
+# Project Argus - Quick Start Script
+# 
+# This script automates the entire setup and launch process for first-time users
+###############################################################################
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+cd "$SCRIPT_DIR"
+
+echo "=================================================="
+echo "Project Argus - Quick Start"
+echo "=================================================="
+echo ""
+
+# Check if setup has been run
+if [ ! -d "venv" ]; then
+    echo "First-time setup detected. Installing dependencies..."
+    echo "This may take several minutes..."
+    echo ""
+    
+    ./setup.sh
+    
+    if [ $? -ne 0 ]; then
+        echo ""
+        echo "Setup failed. Please check the error messages above."
+        exit 1
+    fi
+fi
+
+echo ""
+echo "Starting Project Argus in demo mode..."
+echo ""
+echo "The system will run with simulated traffic for demonstration."
+echo "Access the dashboard at: http://localhost:8050"
+echo ""
+echo "Press Ctrl+C to stop the system."
+echo ""
+
+# Give user a moment to read
+sleep 3
+
+# Run with simulated traffic (no root required)
+./run_argus.sh full --mode passive
+EOF
+
+chmod +x "$DEPLOYMENT_DIR/quickstart.sh"
+
+# Create Windows quick start batch file
+cat > "$DEPLOYMENT_DIR/quickstart.bat" << 'EOF'
+@echo off
+REM Project Argus - Quick Start Script (Windows)
+
+cd /d "%~dp0"
+
+echo ==================================================
+echo Project Argus - Quick Start
+echo ==================================================
+echo.
+
+REM Check if setup has been run
+if not exist "venv" (
+    echo First-time setup detected. Installing dependencies...
+    echo This may take several minutes...
+    echo.
+    
+    call setup.bat
+    
+    if errorlevel 1 (
+        echo.
+        echo Setup failed. Please check the error messages above.
+        pause
+        exit /b 1
+    )
+)
+
+echo.
+echo Starting Project Argus in demo mode...
+echo.
+echo The system will run with simulated traffic for demonstration.
+echo Access the dashboard at: http://localhost:8050
+echo.
+echo Press Ctrl+C to stop the system.
+echo.
+
+REM Give user a moment to read
+timeout /t 3 /nobreak >nul
+
+REM Run with simulated traffic (no admin required)
+call run_argus.bat full --mode passive
+EOF
+
+# Create START_HERE documentation
+cat > "$DEPLOYMENT_DIR/START_HERE.md" << 'EOF'
+# 🚀 START HERE - Project Argus Deployment Package
+
+Welcome to Project Argus! This is a **self-contained deployment package** that includes everything you need to run the AI-driven Network Intrusion Detection/Prevention System.
+
+## ⚡ Fastest Way to Get Started
+
+### Linux/Mac Users:
+```bash
+./quickstart.sh
+```
+
+### Windows Users:
+```
+quickstart.bat
+```
+
+This single command will:
+1. Install all dependencies (first time only)
+2. Launch the full system with demo traffic
+3. Open the dashboard at http://localhost:8050
+
+**That's it!** No complex setup required.
+
+---
+
+## 📦 What's Included
+
+This deployment package contains:
+- ✅ Complete source code
+- ✅ All configuration files
+- ✅ Launch scripts for easy execution
+- ✅ Documentation and examples
+- ✅ Setup scripts for dependency installation
+- ✅ Support for Windows, Linux, and macOS
+
+---
+
+## 🎯 Three Ways to Use This Package
+
+### 1. Quick Demo (Recommended for First Time)
+
+Run with simulated traffic to see how it works:
+
+**Linux/Mac:**
+```bash
+./quickstart.sh
+```
+
+**Windows:**
+```
+quickstart.bat
+```
+
+Then open your browser to: **http://localhost:8050**
+
+### 2. Manual Setup and Launch
+
+If you prefer step-by-step control:
+
+**Step 1: Install Dependencies (First Time Only)**
+```bash
+./setup.sh          # Linux/Mac
+setup.bat           # Windows
+```
+
+**Step 2: Launch the System**
+```bash
+./run_argus.sh full --mode passive    # Linux/Mac
+run_argus.bat full --mode passive     # Windows
+```
+
+**Step 3: Access Dashboard**
+- Open browser to http://localhost:8050
+
+### 3. Production Deployment on Raspberry Pi
+
+For real network monitoring:
+
+1. Copy this entire folder to your Raspberry Pi
+2. Run `./setup.sh` to install dependencies
+3. Edit `.env` file to configure your network interface
+4. Run `sudo ./run_argus.sh full --mode passive` (requires root for packet capture)
+
+---
+
+## 📚 Documentation
+
+- **START_HERE.md** (this file) - Quick start guide
+- **DEPLOYMENT_README.md** - Comprehensive deployment guide
+- **README.md** - Full project documentation
+- **docs/** - Detailed documentation on all features
+
+---
+
+## 🔧 System Requirements
+
+### Minimum (for Demo/Testing):
+- Python 3.9+ (no need to install - included in virtual environment)
+- 4GB RAM
+- 10GB free disk space
+- Internet connection (for initial setup only)
+
+### Recommended (for Production):
+- Raspberry Pi 4/5 with 4GB+ RAM
+- Or any Linux/Mac/Windows machine with 8GB+ RAM
+- Dual network interfaces (for inline IPS mode)
+
+---
+
+## 🎮 What You Can Do
+
+Once running, you can:
+
+1. **View Dashboard** - http://localhost:8050
+   - See real-time network traffic
+   - Monitor device trust scores
+   - View security alerts
+
+2. **Access API** - http://localhost:8000
+   - Programmatic access to all features
+   - REST API for integrations
+
+3. **Train AI Model** - Customize detection
+   ```bash
+   ./run_training.sh --synthetic --num-flows 5000
+   ```
+
+---
+
+## ⚙️ Configuration
+
+Edit the `.env` file to customize:
+- Network interface to monitor
+- Trust score thresholds
+- Auto-blocking behavior
+- API and dashboard ports
+
+---
+
+## 🆘 Troubleshooting
+
+### Setup Fails with Network Errors
+**Problem:** Can't download Python packages
+**Solution:** Check internet connection and try again. The setup script downloads dependencies from PyPI.
+
+### Can't Capture Packets
+**Problem:** Permission denied when starting capture
+**Solution:** Run with elevated privileges:
+- Linux/Mac: `sudo ./run_argus.sh start --mode passive`
+- Windows: Run Command Prompt as Administrator
+
+### Port Already in Use
+**Problem:** Port 8000 or 8050 already in use
+**Solution:** Use custom ports:
+```bash
+./run_argus.sh full --api-port 8001 --dashboard-port 8051
+```
+
+### Virtual Environment Issues
+**Problem:** Commands fail or dependencies missing
+**Solution:** Recreate the virtual environment:
+```bash
+rm -rf venv
+./setup.sh
+```
+
+---
+
+## 🔐 Security Notes
+
+1. **Default Configuration**: The system runs in passive mode (IDS) by default, which is safe and doesn't modify network traffic.
+
+2. **Dashboard Access**: By default, the dashboard is accessible on all network interfaces (0.0.0.0). For production, configure your firewall to restrict access.
+
+3. **Root Privileges**: Packet capture requires root/admin privileges. Demo mode works without special privileges.
+
+---
+
+## 📖 Next Steps
+
+After getting the system running:
+
+1. **Explore the Dashboard** - Familiarize yourself with the interface
+2. **Review Documentation** - Read DEPLOYMENT_README.md for details
+3. **Customize Configuration** - Edit .env for your environment
+4. **Train Your Model** - Use real network data for better detection
+5. **Deploy to Production** - Move to Raspberry Pi for real monitoring
+
+---
+
+## 💡 Key Features
+
+- 🤖 **AI-Powered Detection** - Autoencoder neural network for anomaly detection
+- 📊 **Dynamic Trust Scores** - Rates all network devices (0-100 scale)
+- 🚫 **Active Prevention** - Can automatically block suspicious devices
+- 🔍 **Vulnerability Scanning** - Identifies security weaknesses
+- 📈 **Real-time Dashboard** - Beautiful web interface for monitoring
+- 🔒 **Privacy-First** - All data stays on your device
+
+---
+
+## 🤝 Support
+
+Need help?
+- Check DEPLOYMENT_README.md for detailed documentation
+- Review the docs/ folder for specific guides
+- Visit the GitHub repository for issues and updates
+
+---
+
+## 📄 License
+
+MIT License - See LICENSE file for details
+
+---
+
+**🎉 Thank you for choosing Project Argus! Let's make your network more secure.**
+EOF
+
+# Create package verification script
+cat > "$DEPLOYMENT_DIR/verify_package.py" << 'EOF'
+#!/usr/bin/env python3
+"""
+Deployment Package Verification Script
+
+This script verifies that the deployment package is complete and ready to use.
+"""
+
+import os
+import sys
+from pathlib import Path
+
+def check_file(path, description):
+    """Check if a file exists"""
+    if Path(path).exists():
+        print(f"✓ {description}")
+        return True
+    else:
+        print(f"✗ {description} - MISSING")
+        return False
+
+def check_directory(path, description):
+    """Check if a directory exists"""
+    if Path(path).is_dir():
+        print(f"✓ {description}")
+        return True
+    else:
+        print(f"✗ {description} - MISSING")
+        return False
+
+def main():
+    """Main verification function"""
+    print("=" * 60)
+    print("Project Argus - Deployment Package Verification")
+    print("=" * 60)
+    print()
+    
+    all_ok = True
+    
+    # Check launcher scripts
+    print("Checking Launcher Scripts...")
+    all_ok &= check_file("quickstart.sh", "Quick start script (Linux/Mac)")
+    all_ok &= check_file("quickstart.bat", "Quick start script (Windows)")
+    all_ok &= check_file("run_argus.sh", "Main launcher (Linux/Mac)")
+    all_ok &= check_file("run_argus.bat", "Main launcher (Windows)")
+    all_ok &= check_file("run_training.sh", "Training launcher (Linux/Mac)")
+    all_ok &= check_file("run_training.bat", "Training launcher (Windows)")
+    all_ok &= check_file("setup.sh", "Setup script (Linux/Mac)")
+    all_ok &= check_file("setup.bat", "Setup script (Windows)")
+    print()
+    
+    # Check main files
+    print("Checking Main Files...")
+    all_ok &= check_file("main.py", "Main application file")
+    all_ok &= check_file("train_model.py", "Model training script")
+    all_ok &= check_file("requirements.txt", "Python dependencies")
+    all_ok &= check_file(".env", "Configuration file")
+    print()
+    
+    # Check documentation
+    print("Checking Documentation...")
+    all_ok &= check_file("START_HERE.md", "Quick start guide")
+    all_ok &= check_file("DEPLOYMENT_README.md", "Deployment documentation")
+    all_ok &= check_file("README.md", "Main documentation")
+    all_ok &= check_file("LICENSE", "License file")
+    print()
+    
+    # Check directories
+    print("Checking Directories...")
+    all_ok &= check_directory("src", "Source code directory")
+    all_ok &= check_directory("config", "Configuration directory")
+    all_ok &= check_directory("docs", "Documentation directory")
+    all_ok &= check_directory("data", "Data directory")
+    all_ok &= check_directory("data/logs", "Logs directory")
+    all_ok &= check_directory("data/models", "Models directory")
+    all_ok &= check_directory("examples", "Examples directory")
+    all_ok &= check_directory("tests", "Tests directory")
+    print()
+    
+    # Check critical source files
+    print("Checking Critical Source Files...")
+    all_ok &= check_file("src/__init__.py", "Source package init")
+    all_ok &= check_file("src/config.py", "Configuration module")
+    all_ok &= check_directory("src/api", "API module")
+    all_ok &= check_directory("src/capture", "Capture module")
+    all_ok &= check_directory("src/dashboard", "Dashboard module")
+    all_ok &= check_directory("src/models", "Models module")
+    all_ok &= check_directory("src/scoring", "Scoring module")
+    all_ok &= check_directory("src/ips", "IPS module")
+    print()
+    
+    # Check Python version
+    print("Checking Python Version...")
+    version = sys.version_info
+    if version.major >= 3 and version.minor >= 9:
+        print(f"✓ Python {version.major}.{version.minor}.{version.micro} (compatible)")
+    else:
+        print(f"✗ Python {version.major}.{version.minor}.{version.micro} (requires 3.9+)")
+        all_ok = False
+    print()
+    
+    # Check virtual environment
+    print("Checking Virtual Environment...")
+    if Path("venv").exists():
+        print("✓ Virtual environment found")
+        print("  (Dependencies already installed)")
+    else:
+        print("⚠ Virtual environment not found")
+        print("  (Run setup.sh or setup.bat to install dependencies)")
+    print()
+    
+    # Final result
+    print("=" * 60)
+    if all_ok:
+        print("✓ VERIFICATION COMPLETE - Package is ready to use!")
+        print()
+        print("Next steps:")
+        print("  1. If virtual environment not found, run:")
+        print("     Linux/Mac: ./setup.sh")
+        print("     Windows:   setup.bat")
+        print()
+        print("  2. Launch the system:")
+        print("     Linux/Mac: ./quickstart.sh")
+        print("     Windows:   quickstart.bat")
+    else:
+        print("✗ VERIFICATION FAILED - Package is incomplete!")
+        print()
+        print("Some required files or directories are missing.")
+        print("Please re-extract the deployment package or run build_deployment.sh")
+    print("=" * 60)
+    
+    return 0 if all_ok else 1
+
+if __name__ == "__main__":
+    sys.exit(main())
+EOF
+
+chmod +x "$DEPLOYMENT_DIR/verify_package.py"
+
 # Create comprehensive README for deployment
 cat > "$DEPLOYMENT_DIR/DEPLOYMENT_README.md" << 'EOF'
 # Project Argus - Deployment Package
