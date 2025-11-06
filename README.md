@@ -35,7 +35,32 @@ Project Argus is an advanced, low-cost network security platform designed to pro
 
 ## 🚀 Quick Start
 
-### Installation
+### Option 1: Deployment Package (Easiest - No Git Required)
+
+Use the pre-built deployment package for the fastest setup:
+
+1. **Build the deployment package**:
+```bash
+git clone https://github.com/phoenixdev-512/advanced-AI-IDSIPSframework.git
+cd advanced-AI-IDSIPSframework
+./build_deployment.sh
+```
+
+2. **Use the deployment package**:
+```bash
+cd argus-deployment
+./quickstart.sh    # Linux/Mac
+quickstart.bat     # Windows
+```
+
+3. **Access the dashboard**:
+   - Open browser to `http://localhost:8050`
+
+The deployment package is self-contained and can be copied to any system. See [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md) for details.
+
+### Option 2: Development Installation
+
+For development or customization:
 
 1. **Clone the repository**:
 ```bash
@@ -182,6 +207,33 @@ Run tests:
 ```bash
 pytest tests/
 ```
+
+## 📦 Deployment Package
+
+Project Argus includes a deployment package builder that creates a self-contained, portable version:
+
+### Creating the Package
+```bash
+./build_deployment.sh
+```
+
+This creates an `argus-deployment/` directory containing:
+- Complete source code and configuration
+- Cross-platform launcher scripts (Linux/Mac/Windows)
+- Setup scripts for automatic dependency installation
+- Comprehensive documentation
+- Verification tools
+
+### Using the Package
+The deployment package can be:
+- Copied to any compatible system
+- Distributed as a .tar.gz or .zip file
+- Run without git or build tools
+- Launched with a single command: `./quickstart.sh`
+
+Package size: ~676KB (without dependencies)
+
+See [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md) for complete documentation.
 
 ## 📈 Roadmap
 
