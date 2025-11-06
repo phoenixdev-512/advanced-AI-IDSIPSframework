@@ -1,71 +1,84 @@
-blacklist: []
+# Network Capture Settings
 capture:
-  buffer_size: 65536
-  flow_timeout: 120
-  interface: simulated
-  packet_timeout: 100
+  interface: "eth0"
   promiscuous_mode: true
+  buffer_size: 65536
+  packet_timeout: 100  # milliseconds
+  flow_timeout: 120  # seconds
+  
+# Feature Extraction
 features:
-- src_ip
-- dst_ip
-- src_port
-- dst_port
-- protocol
-- flow_duration
-- total_fwd_packets
-- total_bwd_packets
-- total_fwd_bytes
-- total_bwd_bytes
-- packet_inter_arrival_time
-ips:
-  actions:
-  - threshold: 50
-    type: log
-  - threshold: 30
-    type: alert
-  - threshold: 20
-    type: quarantine
-  - threshold: 10
-    type: block
-  auto_block_threshold: 20
-  enabled: false
-logging:
-  backup_count: 5
-  file: data/logs/argus.log
-  format: '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-  level: INFO
-  max_bytes: 10485760
+  - src_ip
+  - dst_ip
+  - src_port
+  - dst_port
+  - protocol
+  - flow_duration
+  - total_fwd_packets
+  - total_bwd_packets
+  - total_fwd_bytes
+  - total_bwd_bytes
+  - packet_inter_arrival_time
+
+# Model Configuration
 model:
+  type: "autoencoder"  # or "isolation_forest"
   architecture:
-    activation: relu
     encoding_dim: 32
-    hidden_layers:
-    - 64
-    - 32
-    - 16
-    output_activation: sigmoid
+    hidden_layers: [64, 32, 16]
+    activation: "relu"
+    output_activation: "sigmoid"
   training:
-    batch_size: 32
-    early_stopping_patience: 10
     epochs: 100
+    batch_size: 32
     validation_split: 0.2
-  type: autoencoder
+    early_stopping_patience: 10
+  
+# Trust Score Weights
 trust_score:
   behavioral_weight: 0.5
-  decay_rate: 0.95
-  reputation_weight: 0.2
   vulnerability_weight: 0.3
+  reputation_weight: 0.2
+  decay_rate: 0.95  # Score recovery rate per hour
+  
+# Vulnerability Scanning
 vulnerability_scan:
-  dangerous_ports:
-  - 21
-  - 23
-  - 80
-  - 135
-  - 139
-  - 445
-  - 3389
   enabled: true
   new_device_scan: true
-  periodic_scan_interval: 86400
+  periodic_scan_interval: 86400  # 24 hours
+  dangerous_ports:
+    - 21   # FTP
+    - 23   # Telnet
+    - 80   # HTTP (unencrypted)
+    - 135  # RPC
+    - 139  # NetBIOS
+    - 445  # SMB
+    - 3389 # RDP
+  
+# IPS Rules
+ips:
+  enabled: false
+  auto_block_threshold: 20
+  actions:
+    - type: "log"
+      threshold: 50
+    - type: "alert"
+      threshold: 30
+    - type: "quarantine"
+      threshold: 20
+    - type: "block"
+      threshold: 10
+      
+# Whitelist/Blacklist
 whitelist:
-- 192.168.1.1
+  - "192.168.1.1"  # Router
+  
+blacklist: []
+
+# Logging
+logging:
+  level: "INFO"
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  file: "data/logs/argus.log"
+  max_bytes: 10485760  # 10MB
+  backup_count: 5
