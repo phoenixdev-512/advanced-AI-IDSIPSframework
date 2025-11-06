@@ -69,8 +69,6 @@ This will demonstrate the complete detection flow:
 
 ### Option 2: Full Installation (Raspberry Pi)
 
-### Option 2: Full Installation (Raspberry Pi)
-
 For production deployment on Raspberry Pi:
 
 1. **Clone the repository**:
