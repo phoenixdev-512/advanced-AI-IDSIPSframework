@@ -8,7 +8,24 @@ import argparse
 import sys
 import json
 from pathlib import Path
-import numpy as np
+
+# Check for required dependencies before importing project modules
+try:
+    import yaml
+    import numpy as np
+except ImportError as e:
+    missing_module = str(e).split("'")[1]
+    print("\n" + "=" * 70)
+    print(f"ERROR: Required dependency '{missing_module}' is not installed!")
+    print("=" * 70)
+    print("\nTo fix this issue, please install the required dependencies:")
+    print("\n  pip install -r requirements.txt")
+    if missing_module == 'yaml':
+        print("\nOr install PyYAML specifically:")
+        print("\n  pip install pyyaml")
+    print("\nFor more information, see README.md or DEPLOYMENT_GUIDE.md")
+    print("=" * 70 + "\n")
+    sys.exit(1)
 
 # Add src to path
 sys.path.insert(0, str(Path(__file__).parent))
