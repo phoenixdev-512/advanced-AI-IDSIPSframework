@@ -5,7 +5,6 @@ This creates realistic network traffic including normal HTTP/HTTPS and some anom
 """
 
 from scapy.all import IP, TCP, UDP, DNS, DNSQR, wrpcap, Ether
-from scapy.layers.http import HTTP, HTTPRequest
 import random
 
 def generate_sample_pcap(output_file='examples/demo_data/sample_traffic.pcap'):

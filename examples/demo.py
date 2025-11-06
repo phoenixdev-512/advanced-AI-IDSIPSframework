@@ -23,7 +23,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from src.models import AutoencoderModel, FeaturePreprocessor
 from src.scoring import TrustScoreManager, VulnerabilityScanner
-from scapy.all import rdpcap
+from scapy.all import rdpcap, IP, TCP, UDP
 
 # Setup logging
 logging.basicConfig(
@@ -45,18 +45,20 @@ def extract_flows_from_pcap(pcap_file):
         return []
     
     # Group packets into flows (simplified)
+    # Note: This is a simplified flow extraction for demo purposes.
+    # For production, use more sophisticated flow tracking with bidirectional support.
     flows = {}
     
     for pkt in packets:
-        if pkt.haslayer('IP') and (pkt.haslayer('TCP') or pkt.haslayer('UDP')):
-            ip_layer = pkt['IP']
+        if pkt.haslayer(IP) and (pkt.haslayer(TCP) or pkt.haslayer(UDP)):
+            ip_layer = pkt[IP]
             
             # Determine protocol layer
-            if pkt.haslayer('TCP'):
-                proto_layer = pkt['TCP']
+            if pkt.haslayer(TCP):
+                proto_layer = pkt[TCP]
                 protocol = 'TCP'
             else:
-                proto_layer = pkt['UDP']
+                proto_layer = pkt[UDP]
                 protocol = 'UDP'
             
             src_ip = ip_layer.src
@@ -64,15 +66,21 @@ def extract_flows_from_pcap(pcap_file):
             src_port = proto_layer.sport
             dst_port = proto_layer.dport
             
-            # Create flow key (5-tuple)
-            flow_key = (src_ip, dst_ip, src_port, dst_port, protocol)
+            # Create normalized flow key (bidirectional)
+            # Sort IPs/ports to group both directions together
+            if (src_ip, src_port) < (dst_ip, dst_port):
+                flow_key = (src_ip, dst_ip, src_port, dst_port, protocol)
+                is_forward = True
+            else:
+                flow_key = (dst_ip, src_ip, dst_port, src_port, protocol)
+                is_forward = False
             
             if flow_key not in flows:
                 flows[flow_key] = {
-                    'src_ip': src_ip,
-                    'dst_ip': dst_ip,
-                    'src_port': src_port,
-                    'dst_port': dst_port,
+                    'src_ip': flow_key[0],
+                    'dst_ip': flow_key[1],
+                    'src_port': flow_key[2],
+                    'dst_port': flow_key[3],
                     'protocol': protocol,
                     'total_fwd_packets': 0,
                     'total_bwd_packets': 0,
@@ -82,10 +90,14 @@ def extract_flows_from_pcap(pcap_file):
                     'packet_inter_arrival_time': 0,
                 }
             
-            # Update flow statistics
+            # Update flow statistics based on direction
             packet_len = len(pkt)
-            flows[flow_key]['total_fwd_packets'] += 1
-            flows[flow_key]['total_fwd_bytes'] += packet_len
+            if is_forward:
+                flows[flow_key]['total_fwd_packets'] += 1
+                flows[flow_key]['total_fwd_bytes'] += packet_len
+            else:
+                flows[flow_key]['total_bwd_packets'] += 1
+                flows[flow_key]['total_bwd_bytes'] += packet_len
     
     # Convert to list and add derived features
     flow_list = []
@@ -105,7 +117,11 @@ def extract_flows_from_pcap(pcap_file):
 
 
 def train_demo_model(flows):
-    """Train a basic anomaly detection model"""
+    """Train a basic anomaly detection model
+    
+    Note: Uses demo-specific parameters (epochs=20, batch_size=8) for quick training.
+    For production use, consider larger values (epochs=100+, batch_size=32).
+    """
     logger.info("Training anomaly detection model...")
     
     # Preprocess features
