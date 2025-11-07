@@ -10,6 +10,21 @@ import time
 import threading
 from pathlib import Path
 
+# Check for required dependencies before importing project modules
+try:
+    import yaml
+except ImportError as e:
+    print("\n" + "=" * 70)
+    print("ERROR: Required dependency 'pyyaml' is not installed!")
+    print("=" * 70)
+    print("\nTo fix this issue, please install the required dependencies:")
+    print("\n  pip install -r requirements.txt")
+    print("\nNote: The package is called 'pyyaml' but imports as 'yaml':")
+    print("\n  pip install pyyaml")
+    print("\nFor more information, see README.md or DEPLOYMENT_GUIDE.md")
+    print("=" * 70 + "\n")
+    sys.exit(1)
+
 # Add src to path
 sys.path.insert(0, str(Path(__file__).parent))
 
