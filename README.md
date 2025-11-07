@@ -1,19 +1,19 @@
-# 🛡️ Project Argus: AI-Driven Network Threat Intelligence Platform
+# Project Argus: AI-Driven Network Threat Intelligence Platform
 
 **A Lightweight, AI-Driven NIDS/NIPS for SOHO Networks**
 
 Project Argus is an advanced, low-cost network security platform designed to protect small office/home office (SOHO) environments. It runs on lightweight hardware (Raspberry Pi 4/5) and uses behavioral anomaly detection (AI) to identify, rate, and prevent threats from both outside attackers and compromised internal devices.
 
-## 🌟 Key Features
+## Key Features
 
-- **🤖 AI-Powered Anomaly Detection**: Uses Autoencoder neural networks to detect deviations from normal device behavior
-- **📊 Dynamic Device Trust Score**: Rates all network devices (0-100) based on AI-detected anomalies, port scans, and threat intelligence
-- **🚫 Active Intrusion Prevention (IPS)**: Automatically blocks or quarantines devices with critically low trust scores
-- **🔍 Vulnerability Scanning**: Scans new devices for security flaws (open Telnet/FTP ports, etc.)
-- **📈 Real-time Dashboard**: Self-hosted web interface for analytics and device management
-- **🔒 Privacy-First**: All data stays on your device - no cloud subscriptions required
+- **AI-Powered Anomaly Detection**: Uses Autoencoder neural networks to detect deviations from normal device behavior
+- **Dynamic Device Trust Score**: Rates all network devices (0-100) based on AI-detected anomalies, port scans, and threat intelligence
+- **Active Intrusion Prevention (IPS)**: Automatically blocks or quarantines devices with critically low trust scores
+- **Vulnerability Scanning**: Scans new devices for security flaws (open Telnet/FTP ports, etc.)
+- **Real-time Dashboard**: Self-hosted web interface for analytics and device management
+- **Privacy-First**: All data stays on your device - no cloud subscriptions required
 
-## 🏗️ Architecture
+## Architecture
 
 ### Hardware Requirements
 - **Raspberry Pi 4/5** (4GB+ RAM recommended)
@@ -33,7 +33,7 @@ Project Argus is an advanced, low-cost network security platform designed to pro
    - Can actively block malicious traffic
    - Requires IP forwarding and NAT configuration
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Option 1: Deployment Package (Easiest - No Git Required)
 
@@ -94,7 +94,7 @@ sudo systemctl start argus-capture argus-api argus-dashboard
 6. **Access the dashboard**:
    - Open browser to `http://localhost:8050`
 
-## 📚 Documentation
+## Documentation
 
 ### Configuration
 
@@ -158,7 +158,7 @@ python3 main.py dashboard
 - `GET /api/ips/blocked` - List blocked IPs
 - `GET /api/stats` - System statistics
 
-## 🎯 Use Cases
+## Use Cases
 
 ### 1. Home Network Protection
 - Monitor IoT devices (cameras, smart TVs, etc.)
@@ -175,7 +175,7 @@ python3 main.py dashboard
 - Test IDS/IPS effectiveness
 - Analyze network behavior
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 - **Packet Capture**: Scapy
 - **AI/ML**: TensorFlow/Keras, scikit-learn
@@ -185,7 +185,7 @@ python3 main.py dashboard
 - **IPS**: iptables
 - **Scanning**: python-nmap
 
-## 📊 Dashboard Features
+## Dashboard Features
 
 - **Real-time monitoring**: Live network traffic visualization
 - **Device trust scores**: Color-coded trust ratings
@@ -193,7 +193,7 @@ python3 main.py dashboard
 - **Device management**: Whitelist/blacklist controls
 - **Statistics**: Network-wide security metrics
 
-## 🔐 Security Considerations
+## Security Considerations
 
 1. **Run with appropriate privileges**: Packet capture requires root
 2. **Secure the dashboard**: Use firewall to restrict access
@@ -201,14 +201,14 @@ python3 main.py dashboard
 4. **Whitelist critical devices**: Prevent accidental blocking of routers/servers
 5. **Test in passive mode first**: Before enabling inline IPS
 
-## 🧪 Testing
+## Testing
 
 Run tests:
 ```bash
 pytest tests/
 ```
 
-## 📦 Deployment Package
+## Deployment Package
 
 Project Argus includes a deployment package builder that creates a self-contained, portable version:
 
@@ -235,35 +235,35 @@ Package size: ~676KB (without dependencies)
 
 See [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md) for complete documentation.
 
-## 📈 Roadmap
+## Roadmap
 
-- [ ] Phase 1: Core packet capture and storage ✅
-- [ ] Phase 2: AI model training and detection ✅
-- [ ] Phase 3: Dashboard and visualization ✅
-- [ ] Phase 4: IPS and prevention ✅
+- [x] Phase 1: Core packet capture and storage
+- [x] Phase 2: AI model training and detection
+- [x] Phase 3: Dashboard and visualization
+- [x] Phase 4: IPS and prevention
 - [ ] Phase 5: Threat intelligence integration
 - [ ] Phase 6: Advanced analytics and reporting
 - [ ] Phase 7: Mobile app for monitoring
 - [ ] Phase 8: Multi-device support and clustering
 
-## 🤝 Contributing
+## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 
-## 📄 License
+## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
 - Inspired by enterprise-grade NIDS/NIPS solutions
 - Built for the cybersecurity community
 - Designed to make network security accessible to everyone
 
-## 📞 Support
+## Support
 
 For issues, questions, or feature requests, please open an issue on GitHub.
 
 ---
 
-**⚠️ Disclaimer**: This tool is for educational and legitimate network security purposes only. Users are responsible for compliance with applicable laws and regulations.
+**Disclaimer**: This tool is for educational and legitimate network security purposes only. Users are responsible for compliance with applicable laws and regulations.
