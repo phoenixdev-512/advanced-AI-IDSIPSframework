@@ -2,7 +2,7 @@
 
 This folder contains everything you need to train, evaluate, and compare machine learning models for network anomaly detection in Project Argus.
 
-## 📋 Overview
+## Overview
 
 The `model_training/` directory provides a complete framework for training basic machine learning algorithms on network traffic data. This complements the existing deep learning models (Autoencoder, Isolation Forest) and enables you to:
 
@@ -11,7 +11,7 @@ The `model_training/` directory provides a complete framework for training basic
 - Understand which algorithm works best for your network
 - Deploy the best model for production use
 
-## 📁 Directory Structure
+## Directory Structure
 
 ```
 model_training/
@@ -44,7 +44,7 @@ model_training/
 └── visualize_results.py       # Results visualization script
 ```
 
-## 🚀 Quick Start
+## Quick Start
 
 ### 1. Generate Synthetic Training Data
 
@@ -81,7 +81,7 @@ python model_training/visualize_results.py \
   --output model_training/results/plots/
 ```
 
-## 📚 Documentation
+## Documentation
 
 ### Core Documentation
 
@@ -112,7 +112,7 @@ Machine Learning enables **anomaly detection** - the system learns what normal n
 
 Unlike signature-based systems, ML can detect novel attacks without prior knowledge of specific attack patterns.
 
-## 🎯 Use Cases
+## Use Cases
 
 ### 1. Model Selection & Comparison
 
@@ -157,7 +157,7 @@ python model_training/prepare_dataset.py \
 python train_model.py --data data/real_flows.pkl
 ```
 
-## 🔬 Algorithms Included
+## Algorithms Included
 
 | Algorithm | Type | Speed | Accuracy | Interpretability | Best For |
 |-----------|------|-------|----------|------------------|----------|
@@ -168,7 +168,7 @@ python train_model.py --data data/real_flows.pkl
 | **Autoencoder** (existing) | Deep Learning | Medium | High | Low | Unsupervised, complex patterns |
 | **Isolation Forest** (existing) | Tree-based | Fast | Medium | Low | Unsupervised, real-time |
 
-## 📊 Outputs
+## Outputs
 
 ### Trained Models
 - `results/models/randomforest_model.pkl`
@@ -189,7 +189,7 @@ python train_model.py --data data/real_flows.pkl
 - `results/plots/roc_auc_comparison.png` - ROC-AUC comparison
 - `results/plots/summary_dashboard.png` - Comprehensive summary
 
-## 🎓 Learning Resources
+## Learning Resources
 
 ### Understanding the Metrics
 
@@ -201,12 +201,12 @@ python train_model.py --data data/real_flows.pkl
 
 ### Target Performance for IDS/IPS
 
-- ✅ Precision > 95% (minimize false alarms)
-- ✅ Recall > 90% (detect most threats)
-- ✅ F1-Score > 0.92
-- ✅ ROC-AUC > 0.95
+- Precision > 95% (minimize false alarms)
+- Recall > 90% (detect most threats)
+- F1-Score > 0.92
+- ROC-AUC > 0.95
 
-## 🛠️ Advanced Usage
+## Advanced Usage
 
 ### Custom Hyperparameters
 
@@ -229,7 +229,7 @@ Modify `src/models/feature_preprocessing.py` to add custom features, then retrai
 
 For more robust evaluation, implement k-fold cross-validation in your training script.
 
-## 🤝 Integration with Project Argus
+## Integration with Project Argus
 
 ### Deploy Trained Model
 
@@ -248,7 +248,7 @@ After training and evaluation:
 
 The trained models integrate seamlessly with the existing feature preprocessing and trust scoring system.
 
-## 📝 Example Workflow
+## Example Workflow
 
 ```bash
 # Step 1: Prepare synthetic data for testing
@@ -282,7 +282,7 @@ python model_training/visualize_results.py \
 # View: model_training/results/plots/summary_dashboard.png
 ```
 
-## 🔒 Security Considerations
+## Security Considerations
 
 - Models trained on one network may not generalize to others
 - Regular retraining is recommended (weekly/monthly)
@@ -290,7 +290,7 @@ python model_training/visualize_results.py \
 - Use test data that represents your actual network patterns
 - Monitor false positive rates in production
 
-## 🐛 Troubleshooting
+## Troubleshooting
 
 ### Issue: ImportError for sklearn
 ```bash
@@ -309,7 +309,7 @@ pip install scikit-learn
 - Use ensemble methods (Random Forest)
 - Implement whitelist for known-good devices
 
-## 📞 Support
+## Support
 
 - See [TRAINING_GUIDE.md](TRAINING_GUIDE.md) for detailed instructions
 - See [ML_OVERVIEW.md](ML_OVERVIEW.md) for theoretical background
@@ -319,5 +319,3 @@ pip install scikit-learn
 ---
 
 **Note**: This folder focuses on basic supervised machine learning algorithms. For unsupervised anomaly detection using deep learning (Autoencoder) or tree-based methods (Isolation Forest), see the main `train_model.py` script in the project root.
-
-**Happy Training! 🚀🔒**
