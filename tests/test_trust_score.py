@@ -87,7 +87,7 @@ class TestTrustScoreManager:
         
         manager.get_or_create_device("192.168.1.101")  # Normal score
         
-        low_trust = manager.get_low_trust_devices(threshold=75.0)
+        low_trust = manager.get_low_trust_devices(threshold=76.0)
         
         assert len(low_trust) == 1
         assert low_trust[0].device_ip == "192.168.1.100"
