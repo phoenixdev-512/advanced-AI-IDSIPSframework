@@ -1,0 +1,110 @@
+<svg width="1200" height="700" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="1200" height="700" fill="#222"/>
+  
+  <!-- Header -->
+  <rect width="1200" height="60" fill="#2d3135"/>
+  <text x="20" y="38" font-family="Arial" font-size="24" fill="#fff" font-weight="bold">🌐 Live Network Discovery</text>
+  
+  <!-- Page Title -->
+  <text x="20" y="95" font-family="Arial" font-size="20" fill="#fff" font-weight="bold">🌐 Live Network Discovery</text>
+  <text x="20" y="115" font-family="Arial" font-size="14" fill="#adb5bd">Real-time device detection and monitoring</text>
+  
+  <!-- Scan Status -->
+  <g transform="translate(20, 140)">
+    <rect width="1160" height="60" rx="8" fill="#2d3135"/>
+    <circle cx="30" cy="30" r="12" fill="#10b981">
+      <animate attributeName="opacity" values="1;0.3;1" dur="2s" repeatCount="indefinite"/>
+    </circle>
+    <text x="55" y="25" font-family="Arial" font-size="16" fill="#fff" font-weight="bold">Active Scan in Progress</text>
+    <text x="55" y="43" font-family="Arial" font-size="13" fill="#adb5bd">Last updated: 2 seconds ago | 12 devices discovered</text>
+    <rect x="900" y="15" width="240" height="30" rx="4" fill="#3b82f6"/>
+    <text x="1020" y="35" font-family="Arial" font-size="14" fill="#fff" text-anchor="middle" font-weight="bold">🔄 Refresh Network Scan</text>
+  </g>
+  
+  <!-- Devices Table -->
+  <g transform="translate(20, 220)">
+    <rect width="1160" height="460" rx="8" fill="#2d3135"/>
+    
+    <!-- Table Header -->
+    <rect x="0" y="0" width="1160" height="45" rx="8" fill="#1e3a8a"/>
+    <text x="20" y="28" font-family="Arial" font-size="14" fill="#fff" font-weight="bold">Device</text>
+    <text x="200" y="28" font-family="Arial" font-size="14" fill="#fff" font-weight="bold">IP Address</text>
+    <text x="370" y="28" font-family="Arial" font-size="14" fill="#fff" font-weight="bold">MAC Address</text>
+    <text x="620" y="28" font-family="Arial" font-size="14" fill="#fff" font-weight="bold">Type</text>
+    <text x="800" y="28" font-family="Arial" font-size="14" fill="#fff" font-weight="bold">Trust Score</text>
+    <text x="980" y="28" font-family="Arial" font-size="14" fill="#fff" font-weight="bold">Status</text>
+    
+    <!-- Device 1 - Router -->
+    <rect x="10" y="55" width="1140" height="60" rx="4" fill="#1f2937"/>
+    <text x="20" y="80" font-family="Arial" font-size="16" fill="#fff">🌐 Router</text>
+    <text x="20" y="98" font-family="Arial" font-size="12" fill="#6b7280">Gateway</text>
+    <text x="200" y="88" font-family="Arial" font-size="14" fill="#fff">192.168.1.1</text>
+    <text x="370" y="88" font-family="Arial" font-size="13" fill="#adb5bd">AA:BB:CC:DD:EE:01</text>
+    <text x="620" y="88" font-family="Arial" font-size="14" fill="#3b82f6">Network Device</text>
+    <rect x="800" y="73" width="120" height="25" rx="12" fill="#10b981"/>
+    <text x="860" y="91" font-family="Arial" font-size="14" fill="#fff" text-anchor="middle" font-weight="bold">100</text>
+    <circle cx="995" cy="85" r="8" fill="#10b981"/>
+    <text x="1010" y="90" font-family="Arial" font-size="13" fill="#10b981">Online</text>
+    
+    <!-- Device 2 - Laptop -->
+    <rect x="10" y="125" width="1140" height="60" rx="4" fill="#1f2937"/>
+    <text x="20" y="150" font-family="Arial" font-size="16" fill="#fff">💻 Laptop</text>
+    <text x="20" y="168" font-family="Arial" font-size="12" fill="#6b7280">Work Device</text>
+    <text x="200" y="158" font-family="Arial" font-size="14" fill="#fff">192.168.1.42</text>
+    <text x="370" y="158" font-family="Arial" font-size="13" fill="#adb5bd">AA:BB:CC:DD:EE:02</text>
+    <text x="620" y="158" font-family="Arial" font-size="14" fill="#3b82f6">Computer</text>
+    <rect x="800" y="143" width="120" height="25" rx="12" fill="#10b981"/>
+    <text x="860" y="161" font-family="Arial" font-size="14" fill="#fff" text-anchor="middle" font-weight="bold">95</text>
+    <circle cx="995" cy="155" r="8" fill="#10b981"/>
+    <text x="1010" y="160" font-family="Arial" font-size="13" fill="#10b981">Online</text>
+    
+    <!-- Device 3 - Smart TV -->
+    <rect x="10" y="195" width="1140" height="60" rx="4" fill="#1f2937"/>
+    <text x="20" y="220" font-family="Arial" font-size="16" fill="#fff">📺 Smart TV</text>
+    <text x="20" y="238" font-family="Arial" font-size="12" fill="#6b7280">IoT Device</text>
+    <text x="200" y="228" font-family="Arial" font-size="14" fill="#fff">192.168.1.78</text>
+    <text x="370" y="228" font-family="Arial" font-size="13" fill="#adb5bd">AA:BB:CC:DD:EE:03</text>
+    <text x="620" y="228" font-family="Arial" font-size="14" fill="#3b82f6">Media Device</text>
+    <rect x="800" y="213" width="120" height="25" rx="12" fill="#3b82f6"/>
+    <text x="860" y="231" font-family="Arial" font-size="14" fill="#fff" text-anchor="middle" font-weight="bold">88</text>
+    <circle cx="995" cy="225" r="8" fill="#10b981"/>
+    <text x="1010" y="230" font-family="Arial" font-size="13" fill="#10b981">Online</text>
+    
+    <!-- Device 4 - Phone -->
+    <rect x="10" y="265" width="1140" height="60" rx="4" fill="#1f2937"/>
+    <text x="20" y="290" font-family="Arial" font-size="16" fill="#fff">📱 iPhone</text>
+    <text x="20" y="308" font-family="Arial" font-size="12" fill="#6b7280">Mobile</text>
+    <text x="200" y="298" font-family="Arial" font-size="14" fill="#fff">192.168.1.55</text>
+    <text x="370" y="298" font-family="Arial" font-size="13" fill="#adb5bd">AA:BB:CC:DD:EE:04</text>
+    <text x="620" y="298" font-family="Arial" font-size="14" fill="#3b82f6">Mobile Device</text>
+    <rect x="800" y="283" width="120" height="25" rx="12" fill="#10b981"/>
+    <text x="860" y="301" font-family="Arial" font-size="14" fill="#fff" text-anchor="middle" font-weight="bold">92</text>
+    <circle cx="995" cy="295" r="8" fill="#10b981"/>
+    <text x="1010" y="300" font-family="Arial" font-size="13" fill="#10b981">Online</text>
+    
+    <!-- Device 5 - IoT Camera (Warning) -->
+    <rect x="10" y="335" width="1140" height="60" rx="4" fill="#1f2937"/>
+    <text x="20" y="360" font-family="Arial" font-size="16" fill="#fff">📷 IP Camera</text>
+    <text x="20" y="378" font-family="Arial" font-size="12" fill="#6b7280">Security</text>
+    <text x="200" y="368" font-family="Arial" font-size="14" fill="#fff">192.168.1.99</text>
+    <text x="370" y="368" font-family="Arial" font-size="13" fill="#adb5bd">AA:BB:CC:DD:EE:05</text>
+    <text x="620" y="368" font-family="Arial" font-size="14" fill="#3b82f6">IoT Device</text>
+    <rect x="800" y="353" width="120" height="25" rx="12" fill="#f59e0b"/>
+    <text x="860" y="371" font-family="Arial" font-size="14" fill="#fff" text-anchor="middle" font-weight="bold">65</text>
+    <circle cx="995" cy="365" r="8" fill="#f59e0b"/>
+    <text x="1010" y="370" font-family="Arial" font-size="13" fill="#f59e0b">Warning</text>
+    
+    <!-- Device 6 - Unknown (Critical) -->
+    <rect x="10" y="405" width="1140" height="60" rx="4" fill="#1f2937"/>
+    <text x="20" y="430" font-family="Arial" font-size="16" fill="#fff">❓ Unknown</text>
+    <text x="20" y="448" font-family="Arial" font-size="12" fill="#6b7280">Unidentified</text>
+    <text x="200" y="438" font-family="Arial" font-size="14" fill="#fff">192.168.1.105</text>
+    <text x="370" y="438" font-family="Arial" font-size="13" fill="#adb5bd">AA:BB:CC:DD:EE:06</text>
+    <text x="620" y="438" font-family="Arial" font-size="14" fill="#ef4444">Unknown</text>
+    <rect x="800" y="423" width="120" height="25" rx="12" fill="#ef4444"/>
+    <text x="860" y="441" font-family="Arial" font-size="14" fill="#fff" text-anchor="middle" font-weight="bold">18</text>
+    <circle cx="995" cy="435" r="8" fill="#ef4444"/>
+    <text x="1010" y="440" font-family="Arial" font-size="13" fill="#ef4444">Critical</text>
+  </g>
+</svg>

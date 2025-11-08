@@ -1,0 +1,72 @@
+<svg width="1200" height="700" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="1200" height="700" fill="#222"/>
+  
+  <!-- Header -->
+  <rect width="1200" height="60" fill="#2d3135"/>
+  <text x="20" y="38" font-family="Arial" font-size="24" fill="#fff" font-weight="bold">⚙️ Admin &amp; Model Training</text>
+  
+  <!-- Page Title -->
+  <text x="20" y="95" font-family="Arial" font-size="20" fill="#fff" font-weight="bold">⚙️ Admin &amp; Model Training</text>
+  <text x="20" y="115" font-family="Arial" font-size="14" fill="#adb5bd">Manage ML models and configure advanced settings</text>
+  
+  <!-- Train New Model Card -->
+  <g transform="translate(20, 140)">
+    <rect width="1160" height="540" rx="8" fill="#2d3135"/>
+    <rect x="0" y="0" width="1160" height="50" rx="8" fill="#1e3a8a"/>
+    <text x="20" y="33" font-family="Arial" font-size="18" fill="#fff" font-weight="bold">🚀 Train New Anomaly Detection Model</text>
+    
+    <!-- Dataset Upload Area -->
+    <g transform="translate(30, 80)">
+      <rect width="500" height="180" rx="8" fill="#1f2937" stroke="#3b82f6" stroke-width="3" stroke-dasharray="10,5"/>
+      <text x="250" y="60" font-family="Arial" font-size="48" fill="#3b82f6" text-anchor="middle">📁</text>
+      <text x="250" y="100" font-family="Arial" font-size="20" fill="#fff" text-anchor="middle" font-weight="bold">Drag &amp; Drop Your Dataset Here</text>
+      <text x="250" y="125" font-family="Arial" font-size="14" fill="#adb5bd" text-anchor="middle">or click to select files</text>
+      <text x="250" y="145" font-family="Arial" font-size="12" fill="#6b7280" text-anchor="middle">Supported formats: .csv, .parquet, .pkl</text>
+    </g>
+    
+    <!-- Model Configuration Cards -->
+    <g transform="translate(30, 280)">
+      <!-- Model Type Card -->
+      <rect width="350" height="200" rx="8" fill="#1f2937"/>
+      <rect x="0" y="0" width="350" height="40" rx="8" fill="#374151"/>
+      <text x="20" y="27" font-family="Arial" font-size="16" fill="#fff" font-weight="bold">Model Type</text>
+      
+      <circle cx="30" cy="70" r="8" fill="#3b82f6"/>
+      <text x="50" y="75" font-family="Arial" font-size="14" fill="#fff">Autoencoder (Deep Learning)</text>
+      
+      <circle cx="30" cy="110" r="8" fill="none" stroke="#6b7280" stroke-width="2"/>
+      <text x="50" y="115" font-family="Arial" font-size="14" fill="#adb5bd">Isolation Forest (Ensemble)</text>
+      
+      <!-- Training Parameters Card -->
+      <rect x="380" width="350" height="200" rx="8" fill="#1f2937"/>
+      <rect x="380" y="0" width="350" height="40" rx="8" fill="#374151"/>
+      <text x="400" y="27" font-family="Arial" font-size="16" fill="#fff" font-weight="bold">Training Parameters</text>
+      
+      <text x="400" y="70" font-family="Arial" font-size="13" fill="#adb5bd">Epochs:</text>
+      <rect x="400" y="78" width="310" height="30" rx="4" fill="#374151"/>
+      <text x="555" y="98" font-family="Arial" font-size="14" fill="#fff" text-anchor="middle">50</text>
+      
+      <text x="400" y="130" font-family="Arial" font-size="13" fill="#adb5bd">Batch Size:</text>
+      <rect x="400" y="138" width="310" height="30" rx="4" fill="#374151"/>
+      <text x="555" y="158" font-family="Arial" font-size="14" fill="#fff" text-anchor="middle">32</text>
+      
+      <!-- Validation Split Card -->
+      <rect x="760" width="370" height="200" rx="8" fill="#1f2937"/>
+      <rect x="760" y="0" width="370" height="40" rx="8" fill="#374151"/>
+      <text x="780" y="27" font-family="Arial" font-size="16" fill="#fff" font-weight="bold">Advanced Options</text>
+      
+      <text x="780" y="70" font-family="Arial" font-size="13" fill="#adb5bd">Validation Split:</text>
+      <rect x="780" y="78" width="330" height="30" rx="4" fill="#374151"/>
+      <text x="945" y="98" font-family="Arial" font-size="14" fill="#fff" text-anchor="middle">0.2</text>
+      
+      <text x="780" y="130" font-family="Arial" font-size="13" fill="#adb5bd">Learning Rate:</text>
+      <rect x="780" y="138" width="330" height="30" rx="4" fill="#374151"/>
+      <text x="945" y="158" font-family="Arial" font-size="14" fill="#fff" text-anchor="middle">0.001</text>
+    </g>
+    
+    <!-- Train Button -->
+    <rect x="30" y="495" width="1100" height="35" rx="6" fill="#10b981"/>
+    <text x="580" y="520" font-family="Arial" font-size="16" fill="#fff" text-anchor="middle" font-weight="bold">🚀 Start Training</text>
+  </g>
+</svg>

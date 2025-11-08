@@ -1,0 +1,97 @@
+<svg width="1200" height="700" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="1200" height="700" fill="#222"/>
+  
+  <!-- Header -->
+  <rect width="1200" height="60" fill="#2d3135"/>
+  <text x="20" y="38" font-family="Arial" font-size="24" fill="#fff" font-weight="bold">🛡️ Project Argus</text>
+  <text x="1000" y="38" font-family="Arial" font-size="14" fill="#adb5bd">🌞 Light | 🌙 Dark</text>
+  
+  <!-- System Status Badge -->
+  <rect x="500" y="80" width="200" height="30" rx="15" fill="#10b981"/>
+  <text x="600" y="100" font-family="Arial" font-size="14" fill="#fff" text-anchor="middle" font-weight="bold">● System Online</text>
+  
+  <!-- Stats Cards Row -->
+  <g transform="translate(20, 130)">
+    <!-- Total Devices Card -->
+    <rect width="280" height="120" rx="8" fill="#2d3135"/>
+    <text x="140" y="35" font-family="Arial" font-size="16" fill="#adb5bd" text-anchor="middle">Total Devices</text>
+    <text x="140" y="75" font-family="Arial" font-size="36" fill="#3b82f6" text-anchor="middle" font-weight="bold">12</text>
+    
+    <!-- Low Trust Card -->
+    <rect x="300" width="280" height="120" rx="8" fill="#2d3135"/>
+    <text x="440" y="35" font-family="Arial" font-size="16" fill="#adb5bd" text-anchor="middle">Low Trust</text>
+    <text x="440" y="75" font-family="Arial" font-size="36" fill="#f59e0b" text-anchor="middle" font-weight="bold">3</text>
+    
+    <!-- Critical Card -->
+    <rect x="600" width="280" height="120" rx="8" fill="#2d3135"/>
+    <text x="740" y="35" font-family="Arial" font-size="16" fill="#adb5bd" text-anchor="middle">Critical</text>
+    <text x="740" y="75" font-family="Arial" font-size="36" fill="#ef4444" text-anchor="middle" font-weight="bold">1</text>
+    
+    <!-- Blocked IPs Card -->
+    <rect x="900" width="280" height="120" rx="8" fill="#2d3135"/>
+    <text x="1040" y="35" font-family="Arial" font-size="16" fill="#adb5bd" text-anchor="middle">Blocked IPs</text>
+    <text x="1040" y="75" font-family="Arial" font-size="36" fill="#06b6d4" text-anchor="middle" font-weight="bold">5</text>
+  </g>
+  
+  <!-- Trust Score Chart -->
+  <g transform="translate(20, 280)">
+    <rect width="780" height="380" rx="8" fill="#2d3135"/>
+    <text x="20" y="30" font-family="Arial" font-size="18" fill="#fff" font-weight="bold">📈 Device Trust Scores</text>
+    
+    <!-- Chart bars -->
+    <rect x="50" y="80" width="60" height="200" fill="#10b981"/>
+    <text x="80" y="300" font-family="Arial" font-size="12" fill="#adb5bd" text-anchor="middle">Device 1</text>
+    <text x="80" y="70" font-family="Arial" font-size="14" fill="#10b981" text-anchor="middle" font-weight="bold">95</text>
+    
+    <rect x="150" y="120" width="60" height="160" fill="#10b981"/>
+    <text x="180" y="300" font-family="Arial" font-size="12" fill="#adb5bd" text-anchor="middle">Device 2</text>
+    <text x="180" y="110" font-family="Arial" font-size="14" fill="#10b981" text-anchor="middle" font-weight="bold">88</text>
+    
+    <rect x="250" y="100" width="60" height="180" fill="#3b82f6"/>
+    <text x="280" y="300" font-family="Arial" font-size="12" fill="#adb5bd" text-anchor="middle">Device 3</text>
+    <text x="280" y="90" font-family="Arial" font-size="14" fill="#3b82f6" text-anchor="middle" font-weight="bold">92</text>
+    
+    <rect x="350" y="140" width="60" height="140" fill="#f59e0b"/>
+    <text x="380" y="300" font-family="Arial" font-size="12" fill="#adb5bd" text-anchor="middle">Device 4</text>
+    <text x="380" y="130" font-family="Arial" font-size="14" fill="#f59e0b" text-anchor="middle" font-weight="bold">65</text>
+    
+    <rect x="450" y="200" width="60" height="80" fill="#f59e0b"/>
+    <text x="480" y="300" font-family="Arial" font-size="12" fill="#adb5bd" text-anchor="middle">Device 5</text>
+    <text x="480" y="190" font-family="Arial" font-size="14" fill="#f59e0b" text-anchor="middle" font-weight="bold">45</text>
+    
+    <rect x="550" y="230" width="60" height="50" fill="#ef4444"/>
+    <text x="580" y="300" font-family="Arial" font-size="12" fill="#adb5bd" text-anchor="middle">Device 6</text>
+    <text x="580" y="220" font-family="Arial" font-size="14" fill="#ef4444" text-anchor="middle" font-weight="bold">18</text>
+  </g>
+  
+  <!-- Recent Alerts Panel -->
+  <g transform="translate(820, 280)">
+    <rect width="360" height="380" rx="8" fill="#2d3135"/>
+    <text x="20" y="30" font-family="Arial" font-size="18" fill="#fff" font-weight="bold">⚠️ Recent Alerts</text>
+    
+    <!-- Alert 1 -->
+    <rect x="20" y="60" width="320" height="60" rx="4" fill="#1f2937"/>
+    <circle cx="35" cy="90" r="8" fill="#ef4444"/>
+    <text x="55" y="80" font-family="Arial" font-size="13" fill="#fff" font-weight="bold">Critical: Low Trust Score</text>
+    <text x="55" y="98" font-family="Arial" font-size="11" fill="#adb5bd">192.168.1.105 - Score: 18</text>
+    
+    <!-- Alert 2 -->
+    <rect x="20" y="135" width="320" height="60" rx="4" fill="#1f2937"/>
+    <circle cx="35" cy="165" r="8" fill="#f59e0b"/>
+    <text x="55" y="155" font-family="Arial" font-size="13" fill="#fff" font-weight="bold">Warning: Anomaly Detected</text>
+    <text x="55" y="173" font-family="Arial" font-size="11" fill="#adb5bd">192.168.1.42 - Unusual traffic</text>
+    
+    <!-- Alert 3 -->
+    <rect x="20" y="210" width="320" height="60" rx="4" fill="#1f2937"/>
+    <circle cx="35" cy="240" r="8" fill="#3b82f6"/>
+    <text x="55" y="230" font-family="Arial" font-size="13" fill="#fff" font-weight="bold">Info: Port Scan Detected</text>
+    <text x="55" y="248" font-family="Arial" font-size="11" fill="#adb5bd">192.168.1.78 - TCP ports</text>
+    
+    <!-- Alert 4 -->
+    <rect x="20" y="285" width="320" height="60" rx="4" fill="#1f2937"/>
+    <circle cx="35" cy="315" r="8" fill="#10b981"/>
+    <text x="55" y="305" font-family="Arial" font-size="13" fill="#fff" font-weight="bold">Success: Device Blocked</text>
+    <text x="55" y="323" font-family="Arial" font-size="11" fill="#adb5bd">192.168.1.105 quarantined</text>
+  </g>
+</svg>
