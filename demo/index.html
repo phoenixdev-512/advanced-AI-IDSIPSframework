@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Argus - AI-Driven Network Security Platform Demo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #1e3a8a;
+            --secondary: #3b82f6;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --dark: #1f2937;
+            --light: #f3f4f6;
+            --text: #374151;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--text);
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        nav a:hover {
+            color: var(--secondary);
+        }
+
+        /* Hero Section */
+        .hero {
+            background: white;
+            padding: 4rem 0;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            color: var(--text);
+            margin-bottom: 2rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            padding: 0.5rem 1.5rem;
+            background: var(--success);
+            color: white;
+            border-radius: 50px;
+            font-weight: 600;
+            margin-bottom: 2rem;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+
+        /* Features Section */
+        .features {
+            background: var(--light);
+            padding: 4rem 0;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            color: var(--primary);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+
+        /* Screenshots Section */
+        .screenshots {
+            background: white;
+            padding: 4rem 0;
+        }
+
+        .screenshot-grid {
+            display: grid;
+            gap: 3rem;
+        }
+
+        .screenshot-item {
+            background: var(--light);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        .screenshot-item img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .screenshot-caption {
+            padding: 1.5rem;
+            background: white;
+        }
+
+        .screenshot-caption h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+        }
+
+        .screenshot-caption p {
+            color: var(--text);
+        }
+
+        /* Tech Stack */
+        .tech-stack {
+            background: var(--dark);
+            color: white;
+            padding: 4rem 0;
+        }
+
+        .tech-stack h2 {
+            color: white;
+        }
+
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .tech-item {
+            text-align: center;
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+        }
+
+        .tech-item strong {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        /* Quick Start */
+        .quick-start {
+            background: var(--light);
+            padding: 4rem 0;
+        }
+
+        .code-block {
+            background: var(--dark);
+            color: #10b981;
+            padding: 1.5rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1rem 0;
+            font-family: 'Courier New', monospace;
+        }
+
+        .code-block pre {
+            margin: 0;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--dark);
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .footer-links a {
+            color: white;
+            text-decoration: none;
+        }
+
+        .footer-links a:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .hero p {
+                font-size: 1rem;
+            }
+
+            nav ul {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    🛡️ Project Argus
+                </div>
+                <nav>
+                    <ul>
+                        <li><a href="#features">Features</a></li>
+                        <li><a href="#screenshots">Screenshots</a></li>
+                        <li><a href="#tech-stack">Tech Stack</a></li>
+                        <li><a href="#quick-start">Quick Start</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-badge">✨ Demo Version - No Python Required</div>
+            <h1>🛡️ Project Argus</h1>
+            <p>AI-Driven Network Threat Intelligence Platform<br>
+            Lightweight NIDS/NIPS for SOHO Networks</p>
+            <div class="cta-buttons">
+                <a href="https://github.com/phoenixdev-512/advanced-AI-IDSIPSframework" class="btn btn-primary">
+                    View on GitHub
+                </a>
+                <a href="#quick-start" class="btn btn-secondary">
+                    Get Started
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="features">
+        <div class="container">
+            <h2 class="section-title">Key Features</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🤖</div>
+                    <h3>AI-Powered Detection</h3>
+                    <p>Uses Autoencoder neural networks to detect deviations from normal device behavior using advanced anomaly detection algorithms.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3>Dynamic Trust Scores</h3>
+                    <p>Rates all network devices (0-100) based on AI-detected anomalies, port scans, and threat intelligence data.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🚫</div>
+                    <h3>Active Prevention (IPS)</h3>
+                    <p>Automatically blocks or quarantines devices with critically low trust scores to protect your network.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔍</div>
+                    <h3>Vulnerability Scanning</h3>
+                    <p>Scans new devices for security flaws including open Telnet/FTP ports and other vulnerabilities.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📈</div>
+                    <h3>Real-time Dashboard</h3>
+                    <p>Self-hosted web interface with live analytics, device management, and security visualizations.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔒</div>
+                    <h3>Privacy-First</h3>
+                    <p>All data stays on your device - no cloud subscriptions or external data sharing required.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🌐</div>
+                    <h3>Live Network Discovery</h3>
+                    <p>Real-time detection and monitoring of all devices on your network with automatic classification.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⚙️</div>
+                    <h3>Model Training</h3>
+                    <p>Train custom ML models using your network data with drag-and-drop dataset upload interface.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Screenshots Section -->
+    <section id="screenshots" class="screenshots">
+        <div class="container">
+            <h2 class="section-title">Dashboard Screenshots</h2>
+            <div class="screenshot-grid">
+                <!-- Main Dashboard -->
+                <div class="screenshot-item">
+                    <img src="screenshots/main-dashboard.png" alt="Main Dashboard" onerror="this.src='assets/placeholder-main.svg'">
+                    <div class="screenshot-caption">
+                        <h3>📊 Main Dashboard</h3>
+                        <p>Real-time monitoring with device trust scores, network statistics, and system status. Features include live traffic visualization, alert panel, and comprehensive device management controls.</p>
+                    </div>
+                </div>
+
+                <!-- Admin & Model Training -->
+                <div class="screenshot-item">
+                    <img src="screenshots/admin-model-training.png" alt="Admin & Model Training" onerror="this.src='assets/placeholder-admin.svg'">
+                    <div class="screenshot-caption">
+                        <h3>⚙️ Admin & Model Training Page</h3>
+                        <p>Advanced administration panel for training custom ML models. Includes drag-and-drop dataset upload, model configuration, training parameters, and real-time training progress with live metrics visualization.</p>
+                    </div>
+                </div>
+
+                <!-- Network Discovery -->
+                <div class="screenshot-item">
+                    <img src="screenshots/network-discovery.png" alt="Network Discovery" onerror="this.src='assets/placeholder-network.svg'">
+                    <div class="screenshot-caption">
+                        <h3>🌐 Live Network Discovery</h3>
+                        <p>Automatically discovers and monitors all devices on your network in real-time. Shows device types, IP/MAC addresses, trust scores, and allows for device management actions.</p>
+                    </div>
+                </div>
+
+                <!-- Device Details -->
+                <div class="screenshot-item">
+                    <img src="screenshots/device-details.png" alt="Device Details" onerror="this.src='assets/placeholder-device.svg'">
+                    <div class="screenshot-caption">
+                        <h3>🔍 Device Details & Analytics</h3>
+                        <p>Detailed device information including trust score breakdown, network activity patterns, vulnerability assessment, and historical behavior analysis with actionable insights.</p>
+                    </div>
+                </div>
+
+                <!-- Alerts & Incidents -->
+                <div class="screenshot-item">
+                    <img src="screenshots/alerts-incidents.png" alt="Alerts & Incidents" onerror="this.src='assets/placeholder-alerts.svg'">
+                    <div class="screenshot-caption">
+                        <h3>⚠️ Alerts & Security Incidents</h3>
+                        <p>Comprehensive alert management system showing recent security events, anomaly detections, blocked threats, and incident timeline with severity-based filtering.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tech Stack Section -->
+    <section id="tech-stack" class="tech-stack">
+        <div class="container">
+            <h2 class="section-title">Technology Stack</h2>
+            <div class="tech-grid">
+                <div class="tech-item">
+                    <strong>🔬 AI/ML</strong>
+                    <p>TensorFlow/Keras<br>scikit-learn</p>
+                </div>
+                <div class="tech-item">
+                    <strong>📡 Network</strong>
+                    <p>Scapy<br>python-nmap</p>
+                </div>
+                <div class="tech-item">
+                    <strong>💾 Database</strong>
+                    <p>InfluxDB<br>(Time-series)</p>
+                </div>
+                <div class="tech-item">
+                    <strong>⚡ Backend</strong>
+                    <p>FastAPI<br>Uvicorn</p>
+                </div>
+                <div class="tech-item">
+                    <strong>🎨 Frontend</strong>
+                    <p>Plotly Dash<br>Bootstrap</p>
+                </div>
+                <div class="tech-item">
+                    <strong>🔒 Security</strong>
+                    <p>iptables<br>IPS/IDS</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Quick Start Section -->
+    <section id="quick-start" class="quick-start">
+        <div class="container">
+            <h2 class="section-title">Quick Start Guide</h2>
+            
+            <h3 style="margin-top: 2rem; color: var(--primary);">🚀 Option 1: View This Demo (No Setup Required)</h3>
+            <p>You're already viewing the demo! This page showcases all features without requiring Python installation.</p>
+
+            <h3 style="margin-top: 2rem; color: var(--primary);">💻 Option 2: Run Full Dashboard Locally</h3>
+            <p>To run the complete interactive dashboard with real functionality:</p>
+
+            <div class="code-block">
+                <pre># Clone the repository
+git clone https://github.com/phoenixdev-512/advanced-AI-IDSIPSframework.git
+cd advanced-AI-IDSIPSframework
+
+# Create virtual environment
+python3 -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Run the demo (simulated mode - no hardware required)
+python3 main.py full --mode simulated
+
+# Access dashboard at: http://localhost:8050</pre>
+            </div>
+
+            <h3 style="margin-top: 2rem; color: var(--primary);">🎯 Option 3: Deployment Package (Easiest)</h3>
+            <p>Use the pre-built deployment package for fastest setup:</p>
+
+            <div class="code-block">
+                <pre># Build deployment package
+./build_deployment.sh
+
+# Run quickstart
+cd argus-deployment
+./quickstart.sh    # Linux/Mac
+# or
+quickstart.bat     # Windows
+
+# Access dashboard at: http://localhost:8050</pre>
+            </div>
+
+            <h3 style="margin-top: 2rem; color: var(--primary);">📖 Documentation</h3>
+            <ul style="margin: 1rem 0; padding-left: 2rem;">
+                <li><strong>README.md</strong> - Complete project overview and setup</li>
+                <li><strong>DEPLOYMENT_GUIDE.md</strong> - Deployment package documentation</li>
+                <li><strong>docs/QUICK_START_GUIDE.md</strong> - Detailed quick start guide</li>
+                <li><strong>docs/LOCAL_TESTING_GUIDE.md</strong> - Developer testing guide</li>
+                <li><strong>docs/ARCHITECTURE.md</strong> - System architecture details</li>
+            </ul>
+
+            <h3 style="margin-top: 2rem; color: var(--primary);">🎮 Features You Can Test</h3>
+            <div class="features-grid" style="margin-top: 1rem;">
+                <div class="feature-card">
+                    <h4>🔄 Simulated Mode</h4>
+                    <p>Run without hardware - generates realistic network traffic for testing</p>
+                </div>
+                <div class="feature-card">
+                    <h4>🤖 ML Training</h4>
+                    <p>Train models with synthetic data or upload your own datasets</p>
+                </div>
+                <div class="feature-card">
+                    <h4>📊 Live Dashboard</h4>
+                    <p>Interactive charts, real-time updates, and device management</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-links">
+                <a href="https://github.com/phoenixdev-512/advanced-AI-IDSIPSframework">GitHub Repository</a>
+                <a href="https://github.com/phoenixdev-512/advanced-AI-IDSIPSframework/issues">Report Issues</a>
+                <a href="https://github.com/phoenixdev-512/advanced-AI-IDSIPSframework/blob/main/LICENSE">License</a>
+            </div>
+            <p>&copy; 2024 Project Argus - AI-Driven Network Security Platform</p>
+            <p style="font-size: 0.9rem; margin-top: 0.5rem; opacity: 0.8;">
+                Built for educational and legitimate network security purposes only.
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

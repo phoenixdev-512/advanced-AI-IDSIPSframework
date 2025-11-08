@@ -35,7 +35,22 @@ Project Argus is an advanced, low-cost network security platform designed to pro
 
 ## Quick Start
 
-### Option 1: Deployment Package (Easiest - No Git Required)
+### Option 1: View Demo (No Installation Required)
+
+**NEW!** Check out the standalone demo webpage to see all features without any setup:
+
+```bash
+# View the demo in your browser
+cd demo
+python3 serve.py
+# Then open http://localhost:8080/
+
+# Or simply open demo/index.html in your browser
+```
+
+The demo includes screenshots and descriptions of all dashboard pages. Perfect for evaluating the project before installation!
+
+### Option 2: Deployment Package (Easiest - No Git Required)
 
 Use the pre-built deployment package for the fastest setup:
 
@@ -58,7 +73,7 @@ quickstart.bat     # Windows
 
 The deployment package is self-contained and can be copied to any system. See [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md) for details.
 
-### Option 2: Development Installation
+### Option 3: Development Installation
 
 For development or customization:
 
