@@ -67,3 +67,9 @@ temp/
 
 # Deployment package
 argus-deployment/
+
+# Node.js / React
+demo-react/node_modules/
+demo-react/dist/
+demo-react/.vite/
+demo-react/package-lock.json
