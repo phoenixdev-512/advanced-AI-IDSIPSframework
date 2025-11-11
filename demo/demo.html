@@ -1,0 +1,1252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Argus - Interactive Demo</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛡️</text></svg>">
+    
+    <style>
+        /* Microsoft Fluent Design System Inspired Styles */
+        :root {
+            /* Fluent Design Colors */
+            --fluent-blue: #0078D4;
+            --fluent-blue-hover: #106EBE;
+            --fluent-blue-light: #DEECF9;
+            --fluent-dark: #323130;
+            --fluent-gray: #605E5C;
+            --fluent-gray-light: #F3F2F1;
+            --fluent-gray-medium: #EDEBE9;
+            --fluent-white: #FFFFFF;
+            --fluent-success: #107C10;
+            --fluent-warning: #FF8C00;
+            --fluent-danger: #D13438;
+            --fluent-info: #0078D4;
+            
+            /* Shadows */
+            --shadow-depth-4: 0 1.6px 3.6px 0 rgba(0,0,0,0.132), 0 0.3px 0.9px 0 rgba(0,0,0,0.108);
+            --shadow-depth-8: 0 3.2px 7.2px 0 rgba(0,0,0,0.132), 0 0.6px 1.8px 0 rgba(0,0,0,0.108);
+            --shadow-depth-16: 0 6.4px 14.4px 0 rgba(0,0,0,0.132), 0 1.2px 3.6px 0 rgba(0,0,0,0.108);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--fluent-gray-light);
+            color: var(--fluent-dark);
+            overflow-x: hidden;
+        }
+
+        /* Navigation Bar - Fluent Design */
+        .navbar {
+            background-color: var(--fluent-white);
+            box-shadow: var(--shadow-depth-4);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            padding: 0 24px;
+            height: 48px;
+        }
+
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--fluent-dark);
+            text-decoration: none;
+            padding: 8px 12px;
+            border-radius: 4px;
+            transition: background-color 0.15s;
+        }
+
+        .navbar-brand:hover {
+            background-color: var(--fluent-gray-light);
+        }
+
+        .navbar-menu {
+            display: flex;
+            list-style: none;
+            margin-left: auto;
+            gap: 4px;
+        }
+
+        .nav-item {
+            padding: 8px 16px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background-color 0.15s;
+            font-size: 14px;
+            color: var(--fluent-gray);
+            text-decoration: none;
+            display: block;
+        }
+
+        .nav-item:hover {
+            background-color: var(--fluent-gray-light);
+            color: var(--fluent-dark);
+        }
+
+        .nav-item.active {
+            color: var(--fluent-blue);
+            background-color: var(--fluent-blue-light);
+        }
+
+        /* Sidebar Navigation */
+        .layout {
+            display: flex;
+            min-height: calc(100vh - 48px);
+        }
+
+        .sidebar {
+            width: 240px;
+            background-color: var(--fluent-white);
+            border-right: 1px solid var(--fluent-gray-medium);
+            padding: 16px 8px;
+        }
+
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 12px;
+            margin-bottom: 4px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background-color 0.15s;
+            font-size: 14px;
+            color: var(--fluent-gray);
+            text-decoration: none;
+        }
+
+        .sidebar-item:hover {
+            background-color: var(--fluent-gray-light);
+        }
+
+        .sidebar-item.active {
+            background-color: var(--fluent-blue-light);
+            color: var(--fluent-blue);
+        }
+
+        .sidebar-icon {
+            font-size: 20px;
+            width: 24px;
+            text-align: center;
+        }
+
+        /* Main Content Area */
+        .main-content {
+            flex: 1;
+            padding: 24px;
+            overflow-y: auto;
+        }
+
+        /* Page Sections */
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Page Header */
+        .page-header {
+            margin-bottom: 24px;
+        }
+
+        .page-title {
+            font-size: 28px;
+            font-weight: 600;
+            color: var(--fluent-dark);
+            margin-bottom: 4px;
+        }
+
+        .page-subtitle {
+            font-size: 14px;
+            color: var(--fluent-gray);
+        }
+
+        /* Cards - Fluent Design */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .card {
+            background-color: var(--fluent-white);
+            border-radius: 8px;
+            box-shadow: var(--shadow-depth-4);
+            padding: 20px;
+            transition: box-shadow 0.2s, transform 0.2s;
+        }
+
+        .card:hover {
+            box-shadow: var(--shadow-depth-8);
+            transform: translateY(-2px);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .card-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--fluent-gray);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .card-value {
+            font-size: 32px;
+            font-weight: 600;
+            color: var(--fluent-dark);
+            margin-bottom: 8px;
+        }
+
+        .card-label {
+            font-size: 14px;
+            color: var(--fluent-gray);
+        }
+
+        .card-icon {
+            font-size: 24px;
+        }
+
+        /* Status Badges */
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .badge-success {
+            background-color: #DFF6DD;
+            color: var(--fluent-success);
+        }
+
+        .badge-warning {
+            background-color: #FFF4CE;
+            color: var(--fluent-warning);
+        }
+
+        .badge-danger {
+            background-color: #FDE7E9;
+            color: var(--fluent-danger);
+        }
+
+        .badge-info {
+            background-color: var(--fluent-blue-light);
+            color: var(--fluent-blue);
+        }
+
+        /* Buttons - Fluent Design */
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.15s, box-shadow 0.15s;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .btn-primary {
+            background-color: var(--fluent-blue);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--fluent-blue-hover);
+            box-shadow: var(--shadow-depth-4);
+        }
+
+        .btn-secondary {
+            background-color: var(--fluent-gray-medium);
+            color: var(--fluent-dark);
+        }
+
+        .btn-secondary:hover {
+            background-color: #E1DFDD;
+        }
+
+        /* Table - Fluent Design */
+        .table-container {
+            background-color: var(--fluent-white);
+            border-radius: 8px;
+            box-shadow: var(--shadow-depth-4);
+            overflow: hidden;
+            margin-bottom: 24px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background-color: var(--fluent-gray-light);
+        }
+
+        th {
+            padding: 12px 16px;
+            text-align: left;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--fluent-gray);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        td {
+            padding: 16px;
+            border-top: 1px solid var(--fluent-gray-medium);
+            font-size: 14px;
+        }
+
+        tbody tr {
+            transition: background-color 0.15s;
+        }
+
+        tbody tr:hover {
+            background-color: var(--fluent-gray-light);
+        }
+
+        /* Progress Bar */
+        .progress-bar {
+            height: 8px;
+            background-color: var(--fluent-gray-medium);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background-color: var(--fluent-blue);
+            transition: width 0.3s;
+        }
+
+        /* Chart Container */
+        .chart-container {
+            background-color: var(--fluent-white);
+            border-radius: 8px;
+            box-shadow: var(--shadow-depth-4);
+            padding: 20px;
+            margin-bottom: 24px;
+        }
+
+        .chart-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: var(--fluent-dark);
+        }
+
+        /* Status Indicators */
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 8px;
+        }
+
+        .status-online {
+            background-color: var(--fluent-success);
+        }
+
+        .status-warning {
+            background-color: var(--fluent-warning);
+        }
+
+        .status-offline {
+            background-color: var(--fluent-gray);
+        }
+
+        /* Trust Score Meter */
+        .trust-score-meter {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .trust-score-bar {
+            flex: 1;
+            height: 24px;
+            background-color: var(--fluent-gray-medium);
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .trust-score-fill {
+            height: 100%;
+            transition: width 0.5s;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 8px;
+            color: white;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .trust-score-high {
+            background-color: var(--fluent-success);
+        }
+
+        .trust-score-medium {
+            background-color: var(--fluent-warning);
+        }
+
+        .trust-score-low {
+            background-color: var(--fluent-danger);
+        }
+
+        /* Alert Box */
+        .alert {
+            padding: 16px;
+            border-radius: 4px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .alert-info {
+            background-color: var(--fluent-blue-light);
+            color: var(--fluent-blue);
+        }
+
+        .alert-success {
+            background-color: #DFF6DD;
+            color: var(--fluent-success);
+        }
+
+        .alert-warning {
+            background-color: #FFF4CE;
+            color: var(--fluent-warning);
+        }
+
+        .alert-danger {
+            background-color: #FDE7E9;
+            color: var(--fluent-danger);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .sidebar {
+                display: none;
+            }
+            
+            .card-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Loading Animation */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid var(--fluent-gray-medium);
+            border-radius: 50%;
+            border-top-color: var(--fluent-blue);
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Model Training Interface */
+        .upload-zone {
+            border: 2px dashed var(--fluent-gray);
+            border-radius: 8px;
+            padding: 40px;
+            text-align: center;
+            background-color: var(--fluent-gray-light);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .upload-zone:hover {
+            border-color: var(--fluent-blue);
+            background-color: var(--fluent-blue-light);
+        }
+
+        .upload-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Navigation Bar -->
+    <nav class="navbar">
+        <a href="#" class="navbar-brand">
+            <span>🛡️</span>
+            <span>Project Argus</span>
+        </a>
+        <ul class="navbar-menu">
+            <li><a href="index.html" class="nav-item">Static Demo</a></li>
+            <li><a href="#" class="nav-item active">Interactive Demo</a></li>
+            <li><a href="https://github.com/phoenixdev-512/advanced-AI-IDSIPSframework" class="nav-item" target="_blank">GitHub</a></li>
+        </ul>
+    </nav>
+
+    <!-- Main Layout -->
+    <div class="layout">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <a href="#" class="sidebar-item active" data-page="dashboard">
+                <span class="sidebar-icon">📊</span>
+                <span>Dashboard</span>
+            </a>
+            <a href="#" class="sidebar-item" data-page="network">
+                <span class="sidebar-icon">🌐</span>
+                <span>Network Discovery</span>
+            </a>
+            <a href="#" class="sidebar-item" data-page="devices">
+                <span class="sidebar-icon">💻</span>
+                <span>Device Details</span>
+            </a>
+            <a href="#" class="sidebar-item" data-page="alerts">
+                <span class="sidebar-icon">⚠️</span>
+                <span>Alerts & Incidents</span>
+            </a>
+            <a href="#" class="sidebar-item" data-page="admin">
+                <span class="sidebar-icon">⚙️</span>
+                <span>Admin & Training</span>
+            </a>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Dashboard Page -->
+            <div id="dashboard" class="page active">
+                <div class="page-header">
+                    <h1 class="page-title">Dashboard</h1>
+                    <p class="page-subtitle">Real-time network security monitoring</p>
+                </div>
+
+                <div class="alert alert-info">
+                    <span>ℹ️</span>
+                    <span><strong>Interactive Demo Mode:</strong> This demo uses simulated data to showcase Project Argus features. All data updates in real-time.</span>
+                </div>
+
+                <!-- Stats Cards -->
+                <div class="card-grid">
+                    <div class="card">
+                        <div class="card-header">
+                            <span class="card-title">Total Devices</span>
+                            <span class="card-icon">💻</span>
+                        </div>
+                        <div class="card-value" id="total-devices">0</div>
+                        <div class="card-label">Active on network</div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <span class="card-title">Avg Trust Score</span>
+                            <span class="card-icon">🎯</span>
+                        </div>
+                        <div class="card-value" id="avg-trust">0</div>
+                        <div class="card-label">Network health</div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <span class="card-title">Active Alerts</span>
+                            <span class="card-icon">⚠️</span>
+                        </div>
+                        <div class="card-value" id="active-alerts">0</div>
+                        <div class="card-label">Requires attention</div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <span class="card-title">Blocked Threats</span>
+                            <span class="card-icon">🛡️</span>
+                        </div>
+                        <div class="card-value" id="blocked-threats">0</div>
+                        <div class="card-label">Last 24 hours</div>
+                    </div>
+                </div>
+
+                <!-- Charts -->
+                <div class="chart-container">
+                    <h3 class="chart-title">Network Traffic (Last Hour)</h3>
+                    <div id="trafficChart" style="height: 200px; position: relative;">
+                        <svg width="100%" height="100%" style="position: absolute;">
+                            <polyline id="traffic-line" fill="none" stroke="#0078D4" stroke-width="2"></polyline>
+                            <polygon id="traffic-fill" fill="rgba(0, 120, 212, 0.1)"></polygon>
+                        </svg>
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <h3 class="chart-title">Trust Score Distribution</h3>
+                    <div id="trustScoreChart" style="height: 200px;">
+                        <div style="display: flex; align-items: flex-end; height: 100%; gap: 20px; padding: 20px;">
+                            <div style="flex: 1; display: flex; flex-direction: column; align-items: center;">
+                                <div id="bar-90-100" style="width: 100%; background: #107C10; transition: height 0.5s;"></div>
+                                <div style="margin-top: 8px; font-size: 12px; color: #605E5C;">90-100</div>
+                            </div>
+                            <div style="flex: 1; display: flex; flex-direction: column; align-items: center;">
+                                <div id="bar-70-89" style="width: 100%; background: #0078D4; transition: height 0.5s;"></div>
+                                <div style="margin-top: 8px; font-size: 12px; color: #605E5C;">70-89</div>
+                            </div>
+                            <div style="flex: 1; display: flex; flex-direction: column; align-items: center;">
+                                <div id="bar-40-69" style="width: 100%; background: #FF8C00; transition: height 0.5s;"></div>
+                                <div style="margin-top: 8px; font-size: 12px; color: #605E5C;">40-69</div>
+                            </div>
+                            <div style="flex: 1; display: flex; flex-direction: column; align-items: center;">
+                                <div id="bar-0-39" style="width: 100%; background: #D13438; transition: height 0.5s;"></div>
+                                <div style="margin-top: 8px; font-size: 12px; color: #605E5C;">0-39</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Devices Table -->
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Device</th>
+                                <th>IP Address</th>
+                                <th>Status</th>
+                                <th>Trust Score</th>
+                                <th>Last Seen</th>
+                            </tr>
+                        </thead>
+                        <tbody id="devices-table">
+                            <!-- Populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Network Discovery Page -->
+            <div id="network" class="page">
+                <div class="page-header">
+                    <h1 class="page-title">Network Discovery</h1>
+                    <p class="page-subtitle">Live detection and monitoring of all network devices</p>
+                </div>
+
+                <div class="alert alert-success">
+                    <span>✅</span>
+                    <span><strong>Scan Complete:</strong> Found <span id="network-device-count">0</span> devices on your network</span>
+                </div>
+
+                <div class="card-grid">
+                    <div class="card">
+                        <div class="card-header">
+                            <span class="card-title">Scan Status</span>
+                            <span class="card-icon">🔍</span>
+                        </div>
+                        <div class="card-value">Active</div>
+                        <div class="card-label">Last scan: Just now</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 100%;"></div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <span class="card-title">Device Types</span>
+                            <span class="card-icon">📱</span>
+                        </div>
+                        <div style="margin-top: 12px;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                <span style="font-size: 14px;">Computers</span>
+                                <span style="font-size: 14px; font-weight: 600;" id="type-computers">0</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                <span style="font-size: 14px;">IoT Devices</span>
+                                <span style="font-size: 14px; font-weight: 600;" id="type-iot">0</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between;">
+                                <span style="font-size: 14px;">Mobile</span>
+                                <span style="font-size: 14px; font-weight: 600;" id="type-mobile">0</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Device Name</th>
+                                <th>IP Address</th>
+                                <th>MAC Address</th>
+                                <th>Type</th>
+                                <th>Status</th>
+                                <th>Trust Score</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="network-devices-table">
+                            <!-- Populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Device Details Page -->
+            <div id="devices" class="page">
+                <div class="page-header">
+                    <h1 class="page-title">Device Details</h1>
+                    <p class="page-subtitle">Comprehensive device information and analytics</p>
+                </div>
+
+                <div class="card" style="margin-bottom: 24px;">
+                    <div style="display: flex; justify-content: space-between; align-items: start;">
+                        <div>
+                            <h2 style="font-size: 24px; margin-bottom: 8px;">💻 Desktop-PC-01</h2>
+                            <p style="color: var(--fluent-gray); margin-bottom: 16px;">Windows 11 Workstation</p>
+                            <div style="display: flex; gap: 16px; margin-bottom: 16px;">
+                                <div>
+                                    <div style="font-size: 12px; color: var(--fluent-gray);">IP Address</div>
+                                    <div style="font-weight: 600;">192.168.1.105</div>
+                                </div>
+                                <div>
+                                    <div style="font-size: 12px; color: var(--fluent-gray);">MAC Address</div>
+                                    <div style="font-weight: 600;">AA:BB:CC:DD:EE:FF</div>
+                                </div>
+                                <div>
+                                    <div style="font-size: 12px; color: var(--fluent-gray);">First Seen</div>
+                                    <div style="font-weight: 600;">2024-01-15</div>
+                                </div>
+                            </div>
+                        </div>
+                        <span class="badge badge-success">Online</span>
+                    </div>
+
+                    <div style="border-top: 1px solid var(--fluent-gray-medium); padding-top: 16px; margin-top: 16px;">
+                        <h4 style="margin-bottom: 12px; font-size: 14px; color: var(--fluent-gray);">TRUST SCORE</h4>
+                        <div class="trust-score-meter">
+                            <div class="trust-score-bar">
+                                <div class="trust-score-fill trust-score-high" style="width: 85%;">85</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-grid">
+                    <div class="card">
+                        <div class="card-header">
+                            <span class="card-title">Network Activity</span>
+                            <span class="card-icon">📊</span>
+                        </div>
+                        <div style="margin-top: 12px;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                <span>Packets Sent</span>
+                                <span style="font-weight: 600;">1,245,892</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                <span>Packets Received</span>
+                                <span style="font-weight: 600;">2,341,567</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between;">
+                                <span>Data Transfer</span>
+                                <span style="font-weight: 600;">45.2 GB</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <span class="card-title">Open Ports</span>
+                            <span class="card-icon">🔌</span>
+                        </div>
+                        <div style="margin-top: 12px;">
+                            <span class="badge badge-info" style="margin: 4px;">80 (HTTP)</span>
+                            <span class="badge badge-info" style="margin: 4px;">443 (HTTPS)</span>
+                            <span class="badge badge-info" style="margin: 4px;">3389 (RDP)</span>
+                            <span class="badge badge-success" style="margin: 4px;">All Safe</span>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <span class="card-title">Vulnerabilities</span>
+                            <span class="card-icon">🔒</span>
+                        </div>
+                        <div class="card-value" style="color: var(--fluent-success);">0</div>
+                        <div class="card-label">No critical issues found</div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <span class="card-title">AI Anomalies</span>
+                            <span class="card-icon">🤖</span>
+                        </div>
+                        <div class="card-value" style="color: var(--fluent-success);">0</div>
+                        <div class="card-label">Behavior is normal</div>
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <h3 class="chart-title">Traffic Pattern (Last 24 Hours)</h3>
+                    <div id="deviceTrafficChart" style="height: 200px; position: relative;">
+                        <svg width="100%" height="100%" style="position: absolute;">
+                            <polyline id="device-traffic-line" fill="none" stroke="#0078D4" stroke-width="2"></polyline>
+                            <polygon id="device-traffic-fill" fill="rgba(0, 120, 212, 0.1)"></polygon>
+                        </svg>
+                    </div>
+                </div>
+
+                <div style="margin-top: 24px;">
+                    <button class="btn btn-primary" style="margin-right: 8px;">🔄 Refresh</button>
+                    <button class="btn btn-secondary" style="margin-right: 8px;">📊 Export Data</button>
+                    <button class="btn btn-secondary">🔍 Deep Scan</button>
+                </div>
+            </div>
+
+            <!-- Alerts & Incidents Page -->
+            <div id="alerts" class="page">
+                <div class="page-header">
+                    <h1 class="page-title">Alerts & Security Incidents</h1>
+                    <p class="page-subtitle">Monitor and respond to security events</p>
+                </div>
+
+                <div class="card-grid">
+                    <div class="card">
+                        <div class="card-header">
+                            <span class="card-title">Critical</span>
+                            <span class="card-icon" style="color: var(--fluent-danger);">🔴</span>
+                        </div>
+                        <div class="card-value" style="color: var(--fluent-danger);" id="critical-alerts">0</div>
+                        <div class="card-label">Immediate action required</div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <span class="card-title">High Priority</span>
+                            <span class="card-icon" style="color: var(--fluent-warning);">🟠</span>
+                        </div>
+                        <div class="card-value" style="color: var(--fluent-warning);" id="high-alerts">0</div>
+                        <div class="card-label">Review recommended</div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <span class="card-title">Medium</span>
+                            <span class="card-icon" style="color: var(--fluent-info);">🔵</span>
+                        </div>
+                        <div class="card-value" style="color: var(--fluent-info);" id="medium-alerts">0</div>
+                        <div class="card-label">Monitor closely</div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <span class="card-title">Low Priority</span>
+                            <span class="card-icon">⚪</span>
+                        </div>
+                        <div class="card-value" id="low-alerts">0</div>
+                        <div class="card-label">For your information</div>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Time</th>
+                                <th>Severity</th>
+                                <th>Type</th>
+                                <th>Device</th>
+                                <th>Description</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="alerts-table">
+                            <!-- Populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Admin & Model Training Page -->
+            <div id="admin" class="page">
+                <div class="page-header">
+                    <h1 class="page-title">Admin & Model Training</h1>
+                    <p class="page-subtitle">Train custom ML models and manage system settings</p>
+                </div>
+
+                <div class="card" style="margin-bottom: 24px;">
+                    <h3 style="margin-bottom: 16px;">🚀 Train New Anomaly Detection Model</h3>
+                    
+                    <div class="upload-zone" onclick="document.getElementById('file-upload').click()">
+                        <div class="upload-icon">📁</div>
+                        <h4>Drag & Drop Your Dataset Here</h4>
+                        <p style="color: var(--fluent-gray); margin-top: 8px;">or click to select files</p>
+                        <p style="color: var(--fluent-gray); font-size: 12px; margin-top: 8px;">Supported formats: .csv, .parquet, .pkl</p>
+                        <input type="file" id="file-upload" style="display: none;" accept=".csv,.parquet,.pkl">
+                    </div>
+
+                    <div id="upload-status" style="margin-top: 16px; display: none;">
+                        <div class="alert alert-success">
+                            <span>✅</span>
+                            <span>Dataset uploaded successfully: <strong id="filename"></strong></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-grid" style="grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));">
+                    <div class="card">
+                        <h4 style="margin-bottom: 16px;">Model Configuration</h4>
+                        <div style="margin-bottom: 12px;">
+                            <label style="display: block; margin-bottom: 4px; font-size: 14px; font-weight: 600;">Model Type</label>
+                            <select class="btn btn-secondary" style="width: 100%; text-align: left;">
+                                <option>Autoencoder (Deep Learning)</option>
+                                <option>Isolation Forest (Ensemble)</option>
+                                <option>One-Class SVM</option>
+                            </select>
+                        </div>
+                        <div style="margin-bottom: 12px;">
+                            <label style="display: block; margin-bottom: 4px; font-size: 14px; font-weight: 600;">Epochs</label>
+                            <input type="number" value="50" class="btn btn-secondary" style="width: 100%;">
+                        </div>
+                        <div>
+                            <label style="display: block; margin-bottom: 4px; font-size: 14px; font-weight: 600;">Batch Size</label>
+                            <input type="number" value="32" class="btn btn-secondary" style="width: 100%;">
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h4 style="margin-bottom: 16px;">Training Progress</h4>
+                        <div style="margin-bottom: 12px;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                                <span style="font-size: 14px;">Status</span>
+                                <span class="badge badge-info" id="training-status">Ready</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="training-progress" style="width: 0%;"></div>
+                            </div>
+                        </div>
+                        <div style="margin-bottom: 8px;">
+                            <div style="display: flex; justify-content: space-between;">
+                                <span style="font-size: 14px;">Epoch</span>
+                                <span style="font-size: 14px; font-weight: 600;" id="current-epoch">0/0</span>
+                            </div>
+                        </div>
+                        <div>
+                            <div style="display: flex; justify-content: space-between;">
+                                <span style="font-size: 14px;">Loss</span>
+                                <span style="font-size: 14px; font-weight: 600;" id="current-loss">-</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 24px;">
+                    <button class="btn btn-primary" onclick="startTraining()" id="train-btn">
+                        🚀 Start Training
+                    </button>
+                    <button class="btn btn-secondary" style="margin-left: 8px;">📊 View Model History</button>
+                    <button class="btn btn-secondary" style="margin-left: 8px;">⬇️ Download Model</button>
+                </div>
+
+                <div class="chart-container" style="margin-top: 24px;">
+                    <h3 class="chart-title">Training Metrics</h3>
+                    <div id="trainingChart" style="height: 200px; position: relative;">
+                        <svg width="100%" height="100%" style="position: absolute;">
+                            <polyline id="training-line" fill="none" stroke="#0078D4" stroke-width="2"></polyline>
+                            <polygon id="training-fill" fill="rgba(0, 120, 212, 0.1)"></polygon>
+                        </svg>
+                    </div>
+                </div>
+
+                <div class="card" style="margin-top: 24px;">
+                    <h4 style="margin-bottom: 16px;">System Settings</h4>
+                    <div class="card-grid" style="grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));">
+                        <div>
+                            <label style="display: block; margin-bottom: 8px; font-weight: 600;">Trust Score Threshold</label>
+                            <input type="range" min="0" max="100" value="20" style="width: 100%;">
+                            <div style="text-align: center; margin-top: 4px; color: var(--fluent-gray);">20</div>
+                        </div>
+                        <div>
+                            <label style="display: block; margin-bottom: 8px; font-weight: 600;">Auto-Block Enabled</label>
+                            <label style="display: flex; align-items: center; gap: 8px;">
+                                <input type="checkbox" checked>
+                                <span>Automatically block low-trust devices</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Navigation
+        document.querySelectorAll('.sidebar-item').forEach(item => {
+            item.addEventListener('click', (e) => {
+                e.preventDefault();
+                const page = item.dataset.page;
+                
+                // Update active states
+                document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
+                item.classList.add('active');
+                
+                // Show selected page
+                document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+                document.getElementById(page).classList.add('active');
+            });
+        });
+
+        // Simulated Data
+        const devices = [
+            { name: 'Desktop-PC-01', ip: '192.168.1.105', mac: 'AA:BB:CC:DD:EE:FF', type: 'Computer', status: 'online', trust: 85 },
+            { name: 'Laptop-Work', ip: '192.168.1.112', mac: 'BB:CC:DD:EE:FF:AA', type: 'Computer', status: 'online', trust: 92 },
+            { name: 'iPhone-Personal', ip: '192.168.1.156', mac: 'CC:DD:EE:FF:AA:BB', type: 'Mobile', status: 'online', trust: 88 },
+            { name: 'Smart-TV-Living', ip: '192.168.1.203', mac: 'DD:EE:FF:AA:BB:CC', type: 'IoT', status: 'online', trust: 76 },
+            { name: 'Security-Camera-01', ip: '192.168.1.221', mac: 'EE:FF:AA:BB:CC:DD', type: 'IoT', status: 'online', trust: 45 },
+            { name: 'Alexa-Echo', ip: '192.168.1.198', mac: 'FF:AA:BB:CC:DD:EE', type: 'IoT', status: 'online', trust: 71 },
+        ];
+
+        const alerts = [
+            { time: '2 min ago', severity: 'high', type: 'Port Scan', device: 'Security-Camera-01', description: 'Unusual port scanning detected', status: 'Active' },
+            { time: '15 min ago', severity: 'medium', type: 'Anomaly', device: 'Smart-TV-Living', description: 'Traffic pattern deviation detected', status: 'Investigating' },
+            { time: '1 hour ago', severity: 'low', type: 'Info', device: 'Desktop-PC-01', description: 'New device connected to network', status: 'Resolved' },
+            { time: '3 hours ago', severity: 'high', type: 'Vulnerability', device: 'Security-Camera-01', description: 'Open Telnet port detected (CVE-2024-1234)', status: 'Blocked' },
+        ];
+
+        // Update Dashboard Stats
+        function updateDashboard() {
+            const totalDevices = devices.length;
+            const avgTrust = Math.round(devices.reduce((sum, d) => sum + d.trust, 0) / totalDevices);
+            const activeAlerts = alerts.filter(a => a.status === 'Active').length;
+            const blockedThreats = Math.floor(Math.random() * 10) + 15;
+
+            document.getElementById('total-devices').textContent = totalDevices;
+            document.getElementById('avg-trust').textContent = avgTrust;
+            document.getElementById('active-alerts').textContent = activeAlerts;
+            document.getElementById('blocked-threats').textContent = blockedThreats;
+
+            // Update devices table
+            const tbody = document.getElementById('devices-table');
+            tbody.innerHTML = devices.map(device => `
+                <tr>
+                    <td>${device.name}</td>
+                    <td>${device.ip}</td>
+                    <td>
+                        <span class="status-dot ${device.status === 'online' ? 'status-online' : 'status-offline'}"></span>
+                        ${device.status.charAt(0).toUpperCase() + device.status.slice(1)}
+                    </td>
+                    <td>
+                        <div class="trust-score-meter">
+                            <div class="trust-score-bar" style="height: 20px;">
+                                <div class="trust-score-fill ${device.trust >= 70 ? 'trust-score-high' : device.trust >= 40 ? 'trust-score-medium' : 'trust-score-low'}" 
+                                     style="width: ${device.trust}%; font-size: 11px; padding-right: 6px;">${device.trust}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>Just now</td>
+                </tr>
+            `).join('');
+        }
+
+        // Update Network Discovery
+        function updateNetwork() {
+            document.getElementById('network-device-count').textContent = devices.length;
+            document.getElementById('type-computers').textContent = devices.filter(d => d.type === 'Computer').length;
+            document.getElementById('type-iot').textContent = devices.filter(d => d.type === 'IoT').length;
+            document.getElementById('type-mobile').textContent = devices.filter(d => d.type === 'Mobile').length;
+
+            const tbody = document.getElementById('network-devices-table');
+            tbody.innerHTML = devices.map(device => `
+                <tr>
+                    <td>${device.name}</td>
+                    <td>${device.ip}</td>
+                    <td>${device.mac}</td>
+                    <td><span class="badge badge-info">${device.type}</span></td>
+                    <td>
+                        <span class="status-dot ${device.status === 'online' ? 'status-online' : 'status-offline'}"></span>
+                        ${device.status.charAt(0).toUpperCase() + device.status.slice(1)}
+                    </td>
+                    <td>
+                        <div class="trust-score-meter">
+                            <div class="trust-score-bar" style="height: 20px;">
+                                <div class="trust-score-fill ${device.trust >= 70 ? 'trust-score-high' : device.trust >= 40 ? 'trust-score-medium' : 'trust-score-low'}" 
+                                     style="width: ${device.trust}%; font-size: 11px; padding-right: 6px;">${device.trust}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <button class="btn btn-primary" style="padding: 4px 12px; font-size: 12px;">Details</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // Update Alerts
+        function updateAlerts() {
+            const criticalCount = alerts.filter(a => a.severity === 'critical').length;
+            const highCount = alerts.filter(a => a.severity === 'high').length;
+            const mediumCount = alerts.filter(a => a.severity === 'medium').length;
+            const lowCount = alerts.filter(a => a.severity === 'low').length;
+
+            document.getElementById('critical-alerts').textContent = criticalCount;
+            document.getElementById('high-alerts').textContent = highCount;
+            document.getElementById('medium-alerts').textContent = mediumCount;
+            document.getElementById('low-alerts').textContent = lowCount;
+
+            const tbody = document.getElementById('alerts-table');
+            tbody.innerHTML = alerts.map(alert => `
+                <tr>
+                    <td>${alert.time}</td>
+                    <td><span class="badge ${alert.severity === 'high' ? 'badge-danger' : alert.severity === 'medium' ? 'badge-warning' : 'badge-info'}">${alert.severity.toUpperCase()}</span></td>
+                    <td>${alert.type}</td>
+                    <td>${alert.device}</td>
+                    <td>${alert.description}</td>
+                    <td><span class="badge ${alert.status === 'Active' ? 'badge-danger' : alert.status === 'Investigating' ? 'badge-warning' : 'badge-success'}">${alert.status}</span></td>
+                    <td>
+                        <button class="btn btn-primary" style="padding: 4px 12px; font-size: 12px;">View</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // File Upload Handler
+        document.getElementById('file-upload').addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                document.getElementById('filename').textContent = file.name;
+                document.getElementById('upload-status').style.display = 'block';
+            }
+        });
+
+        // Training Simulation
+        let trainingInterval;
+        function startTraining() {
+            const btn = document.getElementById('train-btn');
+            const status = document.getElementById('training-status');
+            const progress = document.getElementById('training-progress');
+            const epoch = document.getElementById('current-epoch');
+            const loss = document.getElementById('current-loss');
+            
+            btn.disabled = true;
+            btn.textContent = '⏳ Training...';
+            status.textContent = 'Training';
+            status.className = 'badge badge-warning';
+            
+            let currentEpoch = 0;
+            const totalEpochs = 50;
+            trainingData = [];
+            
+            trainingInterval = setInterval(() => {
+                currentEpoch++;
+                const progressPercent = (currentEpoch / totalEpochs) * 100;
+                const currentLoss = (0.5 - (currentEpoch / totalEpochs) * 0.4 + Math.random() * 0.05).toFixed(4);
+                
+                progress.style.width = progressPercent + '%';
+                epoch.textContent = `${currentEpoch}/${totalEpochs}`;
+                loss.textContent = currentLoss;
+                
+                // Update training chart
+                trainingData.push(parseFloat(currentLoss));
+                drawLineChart('training-line', 'training-fill', trainingData, 800, 180);
+                
+                if (currentEpoch >= totalEpochs) {
+                    clearInterval(trainingInterval);
+                    btn.disabled = false;
+                    btn.textContent = '✅ Training Complete';
+                    status.textContent = 'Complete';
+                    status.className = 'badge badge-success';
+                }
+            }, 200);
+        }
+
+        // Simple SVG Chart Helper Functions
+        function drawLineChart(svgId, fillId, data, width, height) {
+            const svg = document.querySelector(`#${svgId}`).parentElement.querySelector('svg');
+            const maxVal = Math.max(...data);
+            const step = width / (data.length - 1);
+            
+            let linePoints = '';
+            let fillPoints = `0,${height} `;
+            
+            data.forEach((val, i) => {
+                const x = i * step;
+                const y = height - (val / maxVal) * (height - 20);
+                linePoints += `${x},${y} `;
+                fillPoints += `${x},${y} `;
+            });
+            
+            fillPoints += `${width},${height}`;
+            
+            document.getElementById(svgId).setAttribute('points', linePoints);
+            document.getElementById(fillId).setAttribute('points', fillPoints);
+        }
+
+        function updateBarChart(counts) {
+            const maxHeight = 160;
+            document.getElementById('bar-90-100').style.height = `${(counts[0] / 6) * maxHeight}px`;
+            document.getElementById('bar-70-89').style.height = `${(counts[1] / 6) * maxHeight}px`;
+            document.getElementById('bar-40-69').style.height = `${(counts[2] / 6) * maxHeight}px`;
+            document.getElementById('bar-0-39').style.height = `${(counts[3] / 6) * maxHeight}px`;
+        }
+
+        // Initialize Charts
+        let trafficData = Array.from({length: 60}, () => Math.floor(Math.random() * 1000) + 500);
+        let deviceTrafficData = Array.from({length: 24}, () => Math.floor(Math.random() * 50) + 10);
+        let trainingData = [];
+
+        function initCharts() {
+            const chartWidth = 800;
+            const chartHeight = 180;
+            
+            drawLineChart('traffic-line', 'traffic-fill', trafficData, chartWidth, chartHeight);
+            drawLineChart('device-traffic-line', 'device-traffic-fill', deviceTrafficData, chartWidth, chartHeight);
+            updateBarChart([2, 2, 1, 1]);
+        }
+
+        // Wait for page to load
+        window.addEventListener('load', initCharts);
+        window.addEventListener('resize', initCharts);
+
+        // Initialize data
+        updateDashboard();
+        updateNetwork();
+        updateAlerts();
+
+        // Simulate live updates
+        setInterval(() => {
+            // Update traffic chart
+            trafficData.shift();
+            trafficData.push(Math.floor(Math.random() * 1000) + 500);
+            drawLineChart('traffic-line', 'traffic-fill', trafficData, 800, 180);
+        }, 3000);
+    </script>
+</body>
+</html>
