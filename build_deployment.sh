@@ -137,7 +137,7 @@ if not exist "venv" (
 
 call venv\Scripts\activate.bat
 python main.py %*
-call deactivate
+REM Deactivate is automatic when script exits on Windows
 EOF
 
 # Create Windows training batch launcher
@@ -155,7 +155,7 @@ if not exist "venv" (
 
 call venv\Scripts\activate.bat
 python train_model.py %*
-call deactivate
+REM Deactivate is automatic when script exits on Windows
 EOF
 
 # Create setup script for fresh installation
@@ -218,18 +218,60 @@ if %errorlevel% neq 0 (
     exit /b 1
 )
 
+REM Check Python version
+python --version 2>&1 | findstr /C:"3.9" >nul || python --version 2>&1 | findstr /C:"3.10" >nul || python --version 2>&1 | findstr /C:"3.11" >nul || python --version 2>&1 | findstr /C:"3.12" >nul
+if %errorlevel% neq 0 (
+    echo.
+    echo ========================================
+    echo ERROR: Incompatible Python version!
+    echo ========================================
+    echo.
+    echo This project requires Python 3.9, 3.10, 3.11, or 3.12
+    echo.
+    python --version
+    echo.
+    echo TensorFlow (required dependency) does not support your Python version.
+    echo Please install a compatible Python version from:
+    echo https://www.python.org/downloads/
+    echo.
+    echo Recommended: Python 3.11 or 3.12
+    echo.
+    pause
+    exit /b 1
+)
+
 if not exist "venv" (
     echo Creating virtual environment...
     python -m venv venv
+    if errorlevel 1 (
+        echo Error: Failed to create virtual environment!
+        echo Please ensure Python venv module is installed.
+        pause
+        exit /b 1
+    )
 )
 
+echo Activating virtual environment...
 call venv\Scripts\activate.bat
+if errorlevel 1 (
+    echo Error: Failed to activate virtual environment!
+    pause
+    exit /b 1
+)
+
 echo Upgrading pip...
 python -m pip install --upgrade pip
 echo Installing dependencies...
 pip install -r requirements.txt
-call deactivate
+if errorlevel 1 (
+    echo.
+    echo Error: Failed to install dependencies!
+    echo Please check the error messages above.
+    pause
+    exit /b 1
+)
 
+REM Deactivate is automatic when script exits on Windows
 echo.
 echo Setup complete!
 echo You can now run: run_argus.bat full --mode passive
@@ -428,7 +470,7 @@ For real network monitoring:
 ## 🔧 System Requirements
 
 ### Minimum (for Demo/Testing):
-- Python 3.9+ (no need to install - included in virtual environment)
+- Python 3.9-3.12 (Python 3.14+ not supported yet due to TensorFlow compatibility)
 - 4GB RAM
 - 10GB free disk space
 - Internet connection (for initial setup only)
@@ -645,10 +687,10 @@ def main():
     # Check Python version
     print("Checking Python Version...")
     version = sys.version_info
-    if version.major >= 3 and version.minor >= 9:
+    if version.major == 3 and version.minor >= 9 and version.minor <= 12:
         print(f"✓ Python {version.major}.{version.minor}.{version.micro} (compatible)")
     else:
-        print(f"✗ Python {version.major}.{version.minor}.{version.micro} (requires 3.9+)")
+        print(f"✗ Python {version.major}.{version.minor}.{version.micro} (requires 3.9-3.12)")
         all_ok = False
     print()
     
@@ -782,7 +824,7 @@ Edit the `.env` file to configure:
 - **CPU**: 2 cores
 - **RAM**: 4GB (8GB recommended)
 - **Storage**: 10GB free space
-- **Python**: 3.9+ (included in venv)
+- **Python**: 3.9-3.12 (included in venv)
 
 ### For Production Use (Raspberry Pi)
 - **Hardware**: Raspberry Pi 4/5 (4GB+ RAM)
