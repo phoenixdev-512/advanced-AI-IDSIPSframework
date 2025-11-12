@@ -37,7 +37,22 @@ Project Argus is an advanced, low-cost network security platform designed to pro
 
 ### Option 1: View Demo (No Installation Required)
 
-**NEW!** Check out the standalone demo webpage to see all features without any setup:
+**NEW!** Check out the interactive demos to see all features without any setup:
+
+#### React Interactive Dashboard (Recommended for Best Experience)
+Modern, fully interactive dashboard with glassmorphism design and smooth animations:
+
+```bash
+cd demo-react
+npm install
+npm run dev
+# Then open http://localhost:3000/
+```
+
+Features: Advanced animations, transparency effects, real-time charts, and responsive design.
+
+#### Original HTML Demos
+Simple browser-based demos:
 
 ```bash
 # View the demo in your browser
@@ -48,7 +63,7 @@ python3 serve.py
 # Or simply open demo/index.html in your browser
 ```
 
-The demo includes screenshots and descriptions of all dashboard pages. Perfect for evaluating the project before installation!
+See `demo/README.md` for a detailed comparison of all demo options.
 
 ### Option 2: Deployment Package (Easiest - No Git Required)
 
